@@ -1534,7 +1534,7 @@
             })}
           </div>
           <p className="risk-note t-body" style={{ fontSize: 21, marginTop: 32, maxWidth: 860, lineHeight: 1.45 }}>
-            Volume tracks contract size. Tree, surface and perimeter hazards are being observed regularly by GC teams.
+            {clients[0].name} leads by hazard volume — {segs[0].label} is the top-reported category across all sites.
           </p>
         </div>
       </section>
@@ -1560,7 +1560,7 @@
     const topHazard = [...d.hazardMix].sort((a, b) => b.value - a.value)[0] || { label: "Hazards", value: 0 };
     const topHazardNearMiss = d.stats.nearMisses;
     const hazardContext = d.hazardContext ||
-      `Most ${topHazard.label.toLowerCase()} reports are environmental rather than behavioural. Teams are identifying and reporting them consistently.`;
+      `${topHazard.label} leads the hazard mix with ${topHazard.value} reports. Add context in the edit panel.`;
 
     // Severity colour
     const sevColor = (sev) => {
@@ -1673,7 +1673,7 @@
           <SlideHeader num="04" label="Incident Desk" right="CLEAN WEEK" rightColor={PAL.mid} dark={false} />
           <h2 className="t-display" style={{ position: "absolute", top: 150, left: 80, right: 80,
             fontSize: 88, color: PAL.dark, margin: 0 }}>
-            No harm events. The hazard signal holds.
+            No harm events this week.
           </h2>
           <div style={{ position: "absolute", top: 340, left: 80, width: 820 }}>
             <TopHazardPanel />
@@ -1724,7 +1724,7 @@
           <SlideHeader num="04" label="Incident Desk" right={headerRight} rightColor={headerRightColor} dark={false} />
           <h2 className="t-display" style={{ position: "absolute", top: 150, left: 80, right: 80,
             fontSize: 76, color: PAL.dark, margin: 0, lineHeight: 1.0 }}>
-            {harmCount} harm events. Highest severity featured.
+            {harmCount} harm events this week.
           </h2>
           {/* Top hazard strip */}
           <div style={{ position: "absolute", top: 318, left: 80, right: 80 }}>
@@ -1759,7 +1759,7 @@
         <div className="slide-header-row"><SlideHeader num="04" label="Incident Desk" right={headerRight} rightColor={headerRightColor} dark={false} /></div>
         <h2 className="t-display" style={{ position: "absolute", top: 150, left: 80, right: 80,
           fontSize: 76, color: PAL.dark, margin: 0 }}>
-          {harmCount} harm events this week. Full detail in tracker.
+          {harmCount} harm events this week. Full detail in SafetyCulture.
         </h2>
         {/* Severity summary bar */}
         <div style={{ position: "absolute", top: 318, left: 80, right: 80,
@@ -1931,7 +1931,7 @@
 
         <h2 className="qual-headline t-display" style={{ position: "absolute", top: 150, left: 80,
           fontSize: 80, color: PAL.dark, margin: 0 }}>
-          The systems beneath the work.
+          Audits, actions and accreditations.
         </h2>
 
         {/* SharePoint data badge */}
