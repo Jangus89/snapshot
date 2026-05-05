@@ -944,8 +944,7 @@
   window.buildEditFields = tryBuildEditFields;
 
   // toggleNewsFields stays here as it needs DOM access
-
-
+  function toggleNewsFields() {
     const style = document.getElementById('f-newsStyle').value;
     ['award','stat','quote','milestone','alert'].forEach(s => {
       const el = document.getElementById(`news-${s}-fields`);
