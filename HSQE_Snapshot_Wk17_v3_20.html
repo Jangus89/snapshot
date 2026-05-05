@@ -205,6 +205,7 @@
     .stab-active { background: #B2D235; color: #294238 !important; border-color: #B2D235 !important; font-weight: 700; }
 
 
+    .apply-btn {
       display: block;
       width: calc(100% - 56px);
       margin: 20px 28px 0;
@@ -943,8 +944,7 @@
   window.buildEditFields = tryBuildEditFields;
 
   // toggleNewsFields stays here as it needs DOM access
-
-
+  function toggleNewsFields() {
     const style = document.getElementById('f-newsStyle').value;
     ['award','stat','quote','milestone','alert'].forEach(s => {
       const el = document.getElementById(`news-${s}-fields`);
