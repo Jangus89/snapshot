@@ -205,6 +205,7 @@
     .stab-active { background: #B2D235; color: #294238 !important; border-color: #B2D235 !important; font-weight: 700; }
 
 
+    .apply-btn {
       display: block;
       width: calc(100% - 56px);
       margin: 20px 28px 0;
@@ -535,7 +536,26 @@
     <p style="font-size:11px;color:#ffffff40;font-family:var(--font-mono);padding:0 0 12px;line-height:1.5;">
       Slide layout adapts: 0, 1, 2–3, or 4+ harm events. Highest severity auto-featured. Use + / − to add or remove incidents.
     </p>
-    <div id="incident-cards-edit"></div>
+    <div id="incident-cards-edit">
+      <div class="ims-card-edit">
+        <label class="field-label">Severity</label>
+        <select id="inc-0-severity" style="width:100%;background:#0c1614;border:1px solid #B2D23330;color:#fff;padding:7px 8px;font-family:var(--font-mono);font-size:11px;border-radius:3px;margin-bottom:6px">
+          <option>High severity · Major impact</option>
+          <option>Medium severity · Moderate impact</option>
+          <option selected>Low severity · Minor impact</option>
+          <option>Near miss</option>
+        </select>
+        <input type="text" id="inc-0-type" placeholder="Mechanism e.g. Slip / Trip / Fall" value="Slip / Trip / Fall" style="margin-bottom:6px">
+        <input type="text" id="inc-0-bu" placeholder="Business unit" value="Maintenance" style="margin-bottom:6px">
+        <textarea id="inc-0-summary" placeholder="What happened..." style="margin-bottom:6px;min-height:54px">An operative reversing a rotavator close to a fenceline caught his hand on the fence and suffered a minor soft tissue injury.</textarea>
+        <textarea id="inc-0-learning" placeholder="Learning / action..." style="margin-bottom:6px;min-height:54px">Reinforcing situational awareness near perimeter features during reverse manoeuvres.</textarea>
+        <input type="text" id="inc-0-status" placeholder="Status" value="Under investigation" style="margin-bottom:6px">
+        <div style="display:flex;gap:14px;align-items:center;margin-bottom:4px">
+          <label style="font-family:var(--font-mono);font-size:11px;color:#ffffffa0;"><input type="checkbox" id="inc-0-riddor"> RIDDOR</label>
+          <label style="font-family:var(--font-mono);font-size:11px;color:#ffffffa0;"><input type="checkbox" id="inc-0-lti"> LTI</label>
+        </div>
+      </div>
+    </div>
     <div class="section-label" style="margin-top:16px">Top Hazard Signal</div>
     <div class="field-group">
       <label class="field-label">Context note (blank to auto-generate from hazard mix)</label>
@@ -614,7 +634,11 @@
     <p style="font-size:11px;color:#ffffff40;font-family:var(--font-mono);padding:0 0 8px;line-height:1.5;">
       Written each week. Use + / − to add or remove cards.
     </p>
-    <div id="ims-cards-edit"></div>
+    <div id="ims-cards-edit">
+      <div class="ims-card-edit"><input type="text" id="ims-0-tag" value="Audit"><input type="text" id="ims-0-title" value="Constructionline — Building Safety Act"><textarea id="ims-0-body">Submission with Constructionline for AI to review documentation & evidence. All other areas approved and verified.</textarea></div>
+      <div class="ims-card-edit"><input type="text" id="ims-1-tag" value="Internal"><input type="text" id="ims-1-title" value="Temporary Works gap analysis"><textarea id="ims-1-body">Internal audit gap analysis completed and report distributed.</textarea></div>
+      <div class="ims-card-edit"><input type="text" id="ims-2-tag" value="Tooling"><input type="text" id="ims-2-title" value="IMS Phone App"><textarea id="ims-2-body">Continued development; running noticeably faster. Quality team now using the new app to complete Q checks.</textarea></div>
+    </div>
   </div>
 
   <!-- ── ENVIRONMENT ────────────────────────────── -->
@@ -633,7 +657,11 @@
   <!-- ── WHAT'S NEXT ────────────────────────────── -->
   <div id="tab-priorities" class="slide-tab" style="display:none">
     <div class="section-label">What's Next — Priorities</div>
-    <div id="priorities-edit"></div>
+    <div id="priorities-edit">
+      <div class="priority-edit"><label class="field-label">Title</label><input type="text" id="pri-0-title" value="HSQE KPI Dashboard"><label class="field-label">Description</label><textarea id="pri-0-body">Implement suggested improvements.</textarea></div>
+      <div class="priority-edit"><label class="field-label">Title</label><input type="text" id="pri-1-title" value="RAMS Creator in IMS App"><label class="field-label">Description</label><textarea id="pri-1-body">Build out the in-app RAMS workflow.</textarea></div>
+      <div class="priority-edit"><label class="field-label">Title</label><input type="text" id="pri-2-title" value="Update permit procedures"><label class="field-label">Description</label><textarea id="pri-2-body">Re-issue IMS docs to reflect new permit processes.</textarea></div>
+    </div>
   </div>
 
   <button class="apply-btn" onclick="applyEdits()">Apply Changes</button>
@@ -941,10 +969,11 @@
   }
   // Expose immediately so script3 can call it
   window.buildEditFields = tryBuildEditFields;
+  // Kick off initial render of dynamic edit controls
+  tryBuildEditFields();
 
   // toggleNewsFields stays here as it needs DOM access
-
-
+  function toggleNewsFields() {
     const style = document.getElementById('f-newsStyle').value;
     ['award','stat','quote','milestone','alert'].forEach(s => {
       const el = document.getElementById(`news-${s}-fields`);
