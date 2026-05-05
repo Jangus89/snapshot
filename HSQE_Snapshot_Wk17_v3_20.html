@@ -942,6 +942,8 @@
   }
   // Expose immediately so script3 can call it
   window.buildEditFields = tryBuildEditFields;
+  // Kick off initial render of dynamic edit controls
+  tryBuildEditFields();
 
   // toggleNewsFields stays here as it needs DOM access
   function toggleNewsFields() {
