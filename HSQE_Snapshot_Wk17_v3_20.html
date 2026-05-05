@@ -1,0 +1,2574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HSQE Snapshot — Ground Control</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gc-dark:   #294238;
+      --gc-light:  #B2D235;
+      --gc-mid:    #50B748;
+      --gc-grey:   #E6EBE3;
+      --gc-orange: #F57821;
+      --gc-white:  #FFFFFF;
+      --gc-ink:    #1a2a23;
+      --gc-dark-90: #324d42;
+      --gc-grey-dark: #c9d2c4;
+      --font-display: "Quicksand", system-ui, sans-serif;
+      --font-body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    }
+
+    html, body {
+      background: #0c1614;
+      min-height: 100%;
+      font-family: var(--font-body);
+    }
+
+    /* Edit panel */
+    #edit-panel {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 420px;
+      background: #111d17;
+      border-right: 1px solid #B2D23530;
+      z-index: 1000;
+      overflow-y: auto;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      padding: 0 0 40px 0;
+    }
+    #edit-panel.open { transform: translateX(0); }
+
+    #edit-toggle {
+      position: fixed;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      z-index: 1001;
+      background: var(--gc-light);
+      color: var(--gc-dark);
+      border: none;
+      cursor: pointer;
+      padding: 12px 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: translateY(-50%) rotate(180deg);
+      border-radius: 0 4px 4px 0;
+      transition: background 0.2s, left 0.3s;
+    }
+    #edit-toggle.panel-open {
+      left: 420px;
+    }
+
+    .panel-header {
+      background: var(--gc-dark);
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid #B2D23530;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .panel-header h2 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--gc-light);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .panel-header p {
+      font-size: 12px;
+      color: #ffffff60;
+      line-height: 1.4;
+    }
+
+    .panel-section {
+      padding: 20px 28px 0;
+      border-bottom: 1px solid #B2D23515;
+      padding-bottom: 20px;
+    }
+    .panel-section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: var(--gc-light);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #B2D23525;
+    }
+
+    .field-group { margin-bottom: 12px; }
+    .field-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: #ffffff55;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .field-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      background: #0c1614;
+      border: 1px solid #B2D23330;
+      color: #ffffff;
+      padding: 8px 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-radius: 3px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+      border-color: var(--gc-light);
+    }
+    textarea { resize: vertical; min-height: 60px; line-height: 1.4; }
+
+    .bu-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+    .bu-name {
+      font-size: 11px;
+      color: #ffffff70;
+      font-family: var(--font-mono);
+      padding: 6px 8px;
+      background: #0c1614;
+      border: 1px solid #B2D23320;
+      border-radius: 3px;
+    }
+
+    .ims-card-edit {
+      background: #0c1614;
+      border: 1px solid #B2D23320;
+      border-radius: 3px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+    .ims-card-edit input, .ims-card-edit textarea {
+      margin-bottom: 6px;
+    }
+
+    .priority-edit {
+      background: #0c1614;
+      border: 1px solid #B2D23320;
+      border-radius: 3px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .slide-tab { padding: 16px 28px 0; }
+    .stab {
+      background: #0c1614; border: 1px solid #B2D23330; color: #ffffff60;
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+      padding: 5px 10px; cursor: pointer; border-radius: 2px; transition: all 0.15s;
+    }
+    .stab:hover { border-color: #B2D23360; color: #ffffffaa; }
+    .stab-active { background: #B2D235; color: #294238 !important; border-color: #B2D235 !important; font-weight: 700; }
+
+
+      display: block;
+      width: calc(100% - 56px);
+      margin: 20px 28px 0;
+      background: var(--gc-light);
+      color: var(--gc-dark);
+      border: none;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+    .apply-btn:hover { background: #c8e840; }
+
+    /* Deck */
+    #deck-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 32px 0 48px;
+      transition: margin-left 0.3s;
+    }
+    #deck-container.shifted { margin-left: 420px; }
+
+    /* Slides */
+    .slide-wrap {
+      transform-origin: top center;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+    }
+
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      font-family: var(--font-body);
+      color: var(--gc-ink);
+      background: var(--gc-white);
+    }
+    .slide.dark { background: var(--gc-dark); color: var(--gc-white); }
+    .slide.grey { background: var(--gc-grey); color: var(--gc-ink); }
+
+    .t-display {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 0.95;
+    }
+    .t-mono { font-family: var(--font-mono); }
+    .t-body { font-family: var(--font-body); }
+    .t-eyebrow {
+      font-family: var(--font-body);
+      font-size: 22px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .gc-curve {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.95;
+    }
+
+    /* Slide label */
+    .slide-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: #B2D23580;
+      text-align: center;
+      padding: 6px 0;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Animation base states */
+    .anim-ready { opacity: 0; }
+
+    /* Presentation mode */
+    #presentation-mode {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0c1614;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    #presentation-mode.active { display: flex; align-items: center; justify-content: center; }
+    #pres-slide { width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; position: relative; }
+    #pres-slide .slide { transform-origin: top left; }
+    #pres-counter {
+      position: fixed; bottom: 24px; right: 32px;
+      font-family: var(--font-mono); font-size: 12px;
+      color: #B2D23570; letter-spacing: 0.18em; z-index: 10000;
+    }
+    #pres-hint {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-family: var(--font-mono); font-size: 11px;
+      color: #B2D23550; letter-spacing: 0.16em; z-index: 10000;
+    }
+    #present-btn {
+      position: fixed; top: 20px; right: 80px; z-index: 1002;
+      background: #294238; border: 1px solid #B2D23540;
+      color: #B2D235; font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 0.18em; padding: 8px 18px; cursor: pointer;
+      border-radius: 2px; transition: background 0.2s;
+    }
+    #present-btn:hover { background: #3d5948; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .anim-ready { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<button id="edit-toggle" onclick="togglePanel()">EDIT WEEK</button>
+<button id="present-btn" onclick="enterPresentation()">▶ PRESENT</button>
+
+<div id="presentation-mode">
+  <div id="pres-slide"></div>
+  <div id="pres-counter"></div>
+  <div id="pres-hint">← → ARROW KEYS · SPACE · ESC TO EXIT</div>
+</div>
+
+<div id="edit-panel">
+
+  <!-- Header -->
+  <div class="panel-header">
+    <h2>Weekly Edit Panel</h2>
+    <p>Slide-by-slide. Edit fields then press Apply.</p>
+  </div>
+
+  <!-- Slide tabs -->
+  <div id="slide-tabs" style="display:flex;flex-wrap:wrap;gap:4px;padding:12px 16px;background:#0c1614;border-bottom:1px solid #B2D23320;">
+    <button class="stab stab-active" onclick="showTab('cover',this)">Cover</button>
+    <button class="stab" onclick="showTab('dashboard',this)">Dashboard</button>
+    <button class="stab" onclick="showTab('news',this)">News</button>
+    <button class="stab" onclick="showTab('risk',this)">Risk</button>
+    <button class="stab" onclick="showTab('incident',this)">Incidents</button>
+    <button class="stab" onclick="showTab('quality',this)">Quality</button>
+    <button class="stab" onclick="showTab('env',this)">Environment</button>
+    <button class="stab" onclick="showTab('priorities',this)">What's Next</button>
+  </div>
+
+  <!-- ── COVER ─────────────────────────────────── -->
+  <div id="tab-cover" class="slide-tab">
+    <div class="section-label">Cover</div>
+    <div class="field-group">
+      <label class="field-label">Period long (cover subtitle)</label>
+      <input type="text" id="f-periodLong" value="21 — 27 April 2026">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Period short (slide headers)</label>
+      <input type="text" id="f-periodShort" value="Wk 17 · 21–27 Apr 2026">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Issue no.</label>
+      <input type="text" id="f-issue" value="17">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Cover subline (leave blank to auto-generate)</label>
+      <input type="text" id="f-coverLine" placeholder="Seven days. 326 events. One incident.">
+    </div>
+
+    <div class="section-label" style="margin-top:16px">Business Units</div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:8px;">
+      <span class="field-label" style="margin:0;align-self:center">Unit</span>
+      <span class="field-label" style="margin:0;text-align:center">Red</span>
+      <span class="field-label" style="margin:0;text-align:center">Amber</span>
+    </div>
+    <div class="bu-row"><div class="bu-name">Maintenance</div><input type="number" id="bu-0-red" value="3"><input type="number" id="bu-0-amber" value="197"></div>
+    <div class="bu-row"><div class="bu-name">Infra & Utilities</div><input type="number" id="bu-1-red" value="5"><input type="number" id="bu-1-amber" value="66"></div>
+    <div class="bu-row"><div class="bu-name">LDE</div><input type="number" id="bu-2-red" value="1"><input type="number" id="bu-2-amber" value="20"></div>
+    <div class="bu-row"><div class="bu-name">GC Ireland</div><input type="number" id="bu-3-red" value="0"><input type="number" id="bu-3-amber" value="16"></div>
+    <div class="bu-row"><div class="bu-name">Central Functions</div><input type="number" id="bu-4-red" value="0"><input type="number" id="bu-4-amber" value="0"></div>
+    <div class="bu-row"><div class="bu-name">Land & Water</div><input type="number" id="bu-5-red" value="0"><input type="number" id="bu-5-amber" value="7"></div>
+  </div>
+
+  <!-- ── DASHBOARD ──────────────────────────────── -->
+  <div id="tab-dashboard" class="slide-tab" style="display:none">
+    <div class="section-label">Key Stats</div>
+    <div class="field-row">
+      <div class="field-group"><label class="field-label">Total Events</label><input type="number" id="f-events" value="326"></div>
+      <div class="field-group"><label class="field-label">Hazards</label><input type="number" id="f-hazards" value="301"></div>
+    </div>
+    <div class="field-row">
+      <div class="field-group"><label class="field-label">Incidents</label><input type="number" id="f-incidents" value="7"></div>
+      <div class="field-group"><label class="field-label">Near Misses</label><input type="number" id="f-nearMisses" value="8"></div>
+    </div>
+    <div class="field-row">
+      <div class="field-group"><label class="field-label">Best Practice</label><input type="number" id="f-bestPractice" value="11"></div>
+      <div class="field-group"><label class="field-label">Harm Incidents</label><input type="number" id="f-harmIncidents" value="1"></div>
+    </div>
+    <div class="field-row">
+      <div class="field-group"><label class="field-label">RIDDOR</label><input type="number" id="f-riddor" value="0"></div>
+      <div class="field-group"><label class="field-label">LTI</label><input type="number" id="f-lostTime" value="0"></div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">H/NM to incident ratio</label>
+      <input type="text" id="f-ratio" value="43:1">
+    </div>
+
+    <div class="section-label" style="margin-top:16px">Trend Sparklines (8-week history, oldest→newest)</div>
+    <div class="field-group"><label class="field-label">Events history (comma separated)</label>
+      <input type="text" id="spark-events" value="288,302,270,311,295,320,308,326"></div>
+    <div class="field-group"><label class="field-label">Hazards history</label>
+      <input type="text" id="spark-hazards" value="262,278,247,286,270,295,282,301"></div>
+    <div class="field-group"><label class="field-label">Incidents history</label>
+      <input type="text" id="spark-incidents" value="4,6,3,8,5,9,6,7"></div>
+    <div class="field-group"><label class="field-label">Near misses history</label>
+      <input type="text" id="spark-near" value="10,7,11,9,8,6,9,8"></div>
+    <div class="field-group"><label class="field-label">Best practice history</label>
+      <input type="text" id="spark-bp" value="6,8,5,9,7,10,8,11"></div>
+
+    <div class="section-label" style="margin-top:16px">Narrative</div>
+    <div class="field-group">
+      <label class="field-label">Dashboard subtitle</label>
+      <textarea id="f-dashNote">Eight-week trend on each card. Strong reporting volume, severity remains low.</textarea>
+    </div>
+  </div>
+
+  <!-- ── NEWS ──────────────────────────────────── -->
+  <div id="tab-news" class="slide-tab" style="display:none">
+    <div class="section-label">Style</div>
+    <div class="field-group">
+      <select id="f-newsStyle" style="width:100%;background:#0c1614;border:1px solid #B2D23330;color:#fff;padding:8px 10px;font-family:var(--font-mono);font-size:12px;border-radius:3px;outline:none;" onchange="toggleNewsFields()">
+        <option value="award">Award / Recognition</option>
+        <option value="stat">Stat Callout</option>
+        <option value="quote">Quote</option>
+        <option value="milestone">Milestone</option>
+        <option value="alert">Alert / Notice</option>
+      </select>
+    </div>
+
+    <div class="section-label" style="margin-top:12px">Shared</div>
+    <div class="field-group"><label class="field-label">Eyebrow label</label>
+      <input type="text" id="f-newsEyebrow" value="ROSPA · ORDER OF DISTINCTION"></div>
+    <div class="field-group"><label class="field-label">Top-right badge</label>
+      <input type="text" id="f-newsBadge" value="★ AWARDED"></div>
+    <div class="field-group"><label class="field-label">Body / supporting text</label>
+      <textarea id="f-newsBody">Awarded in recognition of 16 consecutive RoSPA Gold Awards for Health & Safety performance.</textarea></div>
+
+    <div id="news-award-fields">
+      <div class="section-label" style="margin-top:12px">Award / Recognition</div>
+      <div class="field-group"><label class="field-label">Headline line 1</label><input type="text" id="f-newsLine1" value="Sixteen"></div>
+      <div class="field-group"><label class="field-label">Headline line 2</label><input type="text" id="f-newsLine2" value="consecutive"></div>
+      <div class="field-group"><label class="field-label">Headline line 3 (accent)</label><input type="text" id="f-newsLine3" value="Golds."></div>
+      <div class="field-group"><label class="field-label">Streak count</label><input type="number" id="f-rospStreak" value="16"></div>
+      <div class="field-group"><label class="field-label">Qualifying period</label><input type="text" id="f-rospPeriod" value="01 Jan 2025 → 01 Jan 2026"></div>
+    </div>
+
+    <div id="news-stat-fields" style="display:none">
+      <div class="section-label" style="margin-top:12px">Stat Callout</div>
+      <div class="field-group"><label class="field-label">Big number / stat</label><input type="text" id="f-statNumber" value="50,000"></div>
+      <div class="field-group"><label class="field-label">Unit / label</label><input type="text" id="f-statUnit" value="sites maintained"></div>
+      <div class="field-group"><label class="field-label">Secondary stat</label><input type="text" id="f-statSecondary" placeholder="e.g. across 6 business units"></div>
+    </div>
+
+    <div id="news-quote-fields" style="display:none">
+      <div class="section-label" style="margin-top:12px">Quote</div>
+      <div class="field-group"><label class="field-label">Quote text</label><textarea id="f-quoteText" placeholder="No quotation marks needed"></textarea></div>
+      <div class="field-group"><label class="field-label">Attribution name</label><input type="text" id="f-quoteAttrib" placeholder="e.g. Ian McAulay, CEO"></div>
+      <div class="field-group"><label class="field-label">Attribution context</label><input type="text" id="f-quoteContext" placeholder="e.g. Following Storm Eunice response"></div>
+    </div>
+
+    <div id="news-milestone-fields" style="display:none">
+      <div class="section-label" style="margin-top:12px">Milestone</div>
+      <div class="field-group"><label class="field-label">Milestone headline</label><input type="text" id="f-milestoneHead" placeholder="e.g. Woodplan goes live."></div>
+      <div class="field-group"><label class="field-label">Steps (one per line)</label><textarea id="f-milestoneSteps" placeholder="Phase 1 — Pilot&#10;Phase 2 — Rollout&#10;Phase 3 — Complete"></textarea></div>
+      <div class="field-group"><label class="field-label">Current phase (to highlight)</label><input type="text" id="f-milestoneCurrent" placeholder="Phase 2"></div>
+    </div>
+
+    <div id="news-alert-fields" style="display:none">
+      <div class="section-label" style="margin-top:12px">Alert</div>
+      <div class="field-group"><label class="field-label">Alert headline</label><input type="text" id="f-alertHead" placeholder="e.g. CDM Regulations 2025"></div>
+      <div class="field-group"><label class="field-label">Alert level</label>
+        <select id="f-alertLevel" style="width:100%;background:#0c1614;border:1px solid #B2D23330;color:#fff;padding:8px 10px;font-family:var(--font-mono);font-size:12px;border-radius:3px;outline:none;">
+          <option value="advisory">Advisory</option>
+          <option value="action">Action Required</option>
+          <option value="urgent">Urgent</option>
+        </select>
+      </div>
+      <div class="field-group"><label class="field-label">Action required</label><textarea id="f-alertAction" placeholder="e.g. All PMs to review by 30 May 2026"></textarea></div>
+      <div class="field-group"><label class="field-label">Owner / contact</label><input type="text" id="f-alertOwner" placeholder="e.g. James Angus — HSQE"></div>
+    </div>
+  </div>
+
+  <!-- ── RISK / CONCENTRATION ───────────────────── -->
+  <div id="tab-risk" class="slide-tab" style="display:none">
+    <div class="section-label">Hazard Mix (Donut)</div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-0-label" value="DDD Trees"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-0" value="52"></div></div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-1-label" value="Vegetation"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-1" value="43"></div></div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-2-label" value="Slips, Trips & Falls"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-2" value="41"></div></div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-3-label" value="Other hazards"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-3" value="165"></div></div>
+
+    <div class="section-label" style="margin-top:16px">Top Clients (hazard count)</div>
+    <div class="field-group"><label class="field-label">Client 1 name</label><input type="text" id="cl-0-name" value="Morrisons"></div>
+    <div class="field-group"><label class="field-label">Client 1 count</label><input type="number" id="cl-0-val" value="30"></div>
+    <div class="field-group"><label class="field-label">Client 2 name</label><input type="text" id="cl-1-name" value="Severn Trent"></div>
+    <div class="field-group"><label class="field-label">Client 2 count</label><input type="number" id="cl-1-val" value="28"></div>
+    <div class="field-group"><label class="field-label">Client 3 name</label><input type="text" id="cl-2-name" value="National Grid"></div>
+    <div class="field-group"><label class="field-label">Client 3 count</label><input type="number" id="cl-2-val" value="18"></div>
+    <div class="field-group"><label class="field-label">Client 4 name</label><input type="text" id="cl-3-name" value="Network Rail"></div>
+    <div class="field-group"><label class="field-label">Client 4 count</label><input type="number" id="cl-3-val" value="14"></div>
+    <div class="field-group"><label class="field-label">Client 5 name</label><input type="text" id="cl-4-name" value="Tesco"></div>
+    <div class="field-group"><label class="field-label">Client 5 count</label><input type="number" id="cl-4-val" value="11"></div>
+    <div class="field-group"><label class="field-label">Client 6 name</label><input type="text" id="cl-5-name" value="Moto"></div>
+    <div class="field-group"><label class="field-label">Client 6 count</label><input type="number" id="cl-5-val" value="9"></div>
+
+    <div class="section-label" style="margin-top:16px">Narrative</div>
+    <div class="field-group">
+      <label class="field-label">Risk slide note (below client chart)</label>
+      <textarea id="f-riskNote">Volume tracks contract size. Tree, surface and perimeter hazards are being observed regularly by GC teams.</textarea>
+    </div>
+  </div>
+
+  <!-- ── INCIDENTS ──────────────────────────────── -->
+  <div id="tab-incident" class="slide-tab" style="display:none">
+    <div class="section-label">Harm Incidents</div>
+    <p style="font-size:11px;color:#ffffff40;font-family:var(--font-mono);padding:0 0 12px;line-height:1.5;">
+      Slide layout adapts: 0, 1, 2–3, or 4+ harm events. Highest severity auto-featured. Use + / − to add or remove incidents.
+    </p>
+    <div id="incident-cards-edit"></div>
+    <div class="section-label" style="margin-top:16px">Top Hazard Signal</div>
+    <div class="field-group">
+      <label class="field-label">Context note (blank to auto-generate from hazard mix)</label>
+      <textarea id="f-hazardContext" placeholder="Leave blank to auto-generate"></textarea>
+    </div>
+  </div>
+
+  <!-- ── QUALITY & IMS ──────────────────────────── -->
+  <div id="tab-quality" class="slide-tab" style="display:none">
+    <div class="section-label">Live Data Cards (SharePoint mock)</div>
+    <p style="font-size:11px;color:#ffffff40;font-family:var(--font-mono);padding:0 0 12px;line-height:1.5;">
+      These will pull live from SharePoint. Until then, edit manually below.
+    </p>
+
+    <div class="section-label" style="margin-top:4px">Accreditations</div>
+    <div class="field-group"><label class="field-label">Total memberships held</label><input type="number" id="sp-mem-total" value="94"></div>
+    <div style="margin-bottom:8px">
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
+        <span class="field-label" style="margin:0">Name</span>
+        <span class="field-label" style="margin:0">Expiry</span>
+        <span class="field-label" style="margin:0">Days left</span>
+        <span class="field-label" style="margin:0">Status</span>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
+        <input type="text" id="sp-cert-0-name" value="CLOCS Champion Membership">
+        <input type="text" id="sp-cert-0-expiry" value="01/04/26">
+        <input type="number" id="sp-cert-0-days" value="-30">
+        <input type="text" id="sp-cert-0-status" value="Expired">
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
+        <input type="text" id="sp-cert-1-name" value="RISQS Audit — SAS">
+        <input type="text" id="sp-cert-1-expiry" value="05/06/26">
+        <input type="number" id="sp-cert-1-days" value="35">
+        <input type="text" id="sp-cert-1-status" value="Current">
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
+        <input type="text" id="sp-cert-2-name" value="NIC EIC EV Certification">
+        <input type="text" id="sp-cert-2-expiry" value="06/01/25">
+        <input type="number" id="sp-cert-2-days" value="0">
+        <input type="text" id="sp-cert-2-status" value="Pending">
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px">
+        <input type="text" id="sp-cert-3-name" value="Constructionline Platinum">
+        <input type="text" id="sp-cert-3-expiry" value="08/08/26">
+        <input type="number" id="sp-cert-3-days" value="99">
+        <input type="text" id="sp-cert-3-status" value="Current">
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:8px">Actions</div>
+    <div class="field-row-3">
+      <div class="field-group"><label class="field-label">Open</label><input type="number" id="sp-act-total" value="379"></div>
+      <div class="field-group"><label class="field-label">Overdue</label><input type="number" id="sp-act-overdue" value="18"></div>
+      <div class="field-group"><label class="field-label">Closed ↑wk</label><input type="number" id="sp-act-closed" value="13"></div>
+    </div>
+
+    <div class="section-label" style="margin-top:8px">Nonconformities</div>
+    <div class="field-row-3">
+      <div class="field-group"><label class="field-label">Open NCRs</label><input type="number" id="sp-ncr-open" value="12"></div>
+      <div class="field-group"><label class="field-label">Overdue close</label><input type="number" id="sp-ncr-overdue" value="2"></div>
+      <div class="field-group"><label class="field-label">Raised ↑wk</label><input type="number" id="sp-ncr-raised" value="3"></div>
+    </div>
+
+    <div class="section-label" style="margin-top:8px">Audits</div>
+    <div class="field-row">
+      <div class="field-group"><label class="field-label">Completed / Scheduled</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <input type="number" id="sp-aud-complete" value="3">
+          <input type="number" id="sp-aud-sched" value="4">
+        </div>
+      </div>
+      <div class="field-group"><label class="field-label">Overdue actions</label><input type="number" id="sp-aud-overdue" value="6"></div>
+    </div>
+
+    <div class="section-label" style="margin-top:12px">IMS Update Cards (manual)</div>
+    <p style="font-size:11px;color:#ffffff40;font-family:var(--font-mono);padding:0 0 8px;line-height:1.5;">
+      Written each week. Use + / − to add or remove cards.
+    </p>
+    <div id="ims-cards-edit"></div>
+  </div>
+
+  <!-- ── ENVIRONMENT ────────────────────────────── -->
+  <div id="tab-env" class="slide-tab" style="display:none">
+    <div class="section-label">Environment</div>
+    <div class="field-group">
+      <label class="field-label">Environmental incidents</label>
+      <input type="number" id="f-envIncidents" value="0">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Environment note</label>
+      <textarea id="f-envNote">A clean week. Site teams continued to apply pollution prevention, waste segregation and biodiversity controls without notable issue.</textarea>
+    </div>
+  </div>
+
+  <!-- ── WHAT'S NEXT ────────────────────────────── -->
+  <div id="tab-priorities" class="slide-tab" style="display:none">
+    <div class="section-label">What's Next — Priorities</div>
+    <div id="priorities-edit"></div>
+  </div>
+
+  <button class="apply-btn" onclick="applyEdits()">Apply Changes</button>
+</div>
+
+
+
+<div id="deck-container">
+  <div id="root"></div>
+</div>
+
+<script>
+  // Panel toggle
+  // Panel toggle and showTab defined in plain script above
+
+  // Build IMS card edit fields
+  const DEFAULT_IMS = [
+    { tag: "Audit", title: "Constructionline — Building Safety Act", body: "Submission with Constructionline for AI to review documentation & evidence. All other areas approved and verified." },
+    { tag: "Internal", title: "Temporary Works gap analysis", body: "Internal audit gap analysis completed and report distributed." },
+    { tag: "Tooling", title: "IMS Phone App", body: "Continued development; running noticeably faster. Quality team now using the new app to complete Q checks." },
+    { tag: "Permits", title: "Permit procedure updates", body: "Permit findings actively being closed. Next: re-issue IMS documentation to reflect updated permit processes." },
+    { tag: "Templates", title: "SafetyCulture updates", body: "New concrete inspection checklists added to the site report template. Rope access supervisor checklist added to induction & competency checks." },
+    { tag: "Mapping", title: "Procurement process mapping", body: "Cosmin & Phill attending in-person workshops in Billericay the week after next." },
+  ];
+
+  const DEFAULT_PRIORITIES = [
+    { title: "HSQE KPI Dashboard", body: "Implement suggested improvements." },
+    { title: "RAMS Creator in IMS App", body: "Build out the in-app RAMS workflow." },
+    { title: "Update permit procedures", body: "Re-issue IMS docs to reflect new permit processes." },
+  ];
+
+  const DEFAULT_INCIDENTS = [
+    {
+      severity: "Low severity · Minor impact",
+      type: "Slip / Trip / Fall",
+      bu: "Maintenance",
+      summary: "An operative reversing a rotavator close to a fenceline caught his hand on the fence and suffered a minor soft tissue injury.",
+      learning: "Reinforcing situational awareness near perimeter features during reverse manoeuvres.",
+      riddor: false,
+      lti: false,
+      status: "Under investigation",
+    },
+  ];
+
+  const SEVERITY_ORDER = [
+    "High severity · Major impact",
+    "Medium severity · Moderate impact",
+    "Low severity · Minor impact",
+    "Near miss",
+  ];
+
+  function buildEditFields() {
+    // Incident cards
+    const incContainer = document.getElementById('incident-cards-edit');
+    if (!incContainer) return; // DOM not ready yet
+    function makeEl(tag, props, text) {
+      const el = document.createElement(tag);
+      Object.entries(props || {}).forEach(([k,v]) => {
+        if (k === 'style') el.style.cssText = v;
+        else if (k === 'class') el.className = v;
+        else el[k] = v;
+      });
+      if (text !== undefined) el.textContent = text;
+      return el;
+    }
+
+    function syncIncFromDOM() {
+      if (!window._incidentData) return;
+      window._incidentData.forEach((inc, i) => {
+        inc.severity = document.getElementById('inc-'+i+'-severity')?.value ?? inc.severity;
+        inc.type     = document.getElementById('inc-'+i+'-type')?.value     ?? inc.type;
+        inc.bu       = document.getElementById('inc-'+i+'-bu')?.value       ?? inc.bu;
+        inc.summary  = document.getElementById('inc-'+i+'-summary')?.value  ?? inc.summary;
+        inc.learning = document.getElementById('inc-'+i+'-learning')?.value ?? inc.learning;
+        inc.status   = document.getElementById('inc-'+i+'-status')?.value   ?? inc.status;
+        inc.riddor   = document.getElementById('inc-'+i+'-riddor')?.checked ?? false;
+        inc.lti      = document.getElementById('inc-'+i+'-lti')?.checked    ?? false;
+      });
+    }
+
+    function renderIncidentCards(incidents) {
+      incContainer.innerHTML = '';
+      incidents.forEach((inc, i) => {
+        const div = makeEl('div', { class: 'ims-card-edit', style: 'position:relative;padding-bottom:4px' });
+
+        // Header: label + minus button on every card
+        const hdr = makeEl('div', { style: 'display:flex;justify-content:space-between;align-items:center;margin-bottom:8px' });
+        hdr.appendChild(makeEl('span', { class: 'field-label', style: 'margin:0;color:#B2D235;font-size:10px;letter-spacing:0.18em' }, 'INCIDENT ' + (i+1) + ' OF ' + incidents.length));
+        const rmBtn = makeEl('button', { style: 'background:#1a0000;border:1px solid #ff444455;color:#ff8888;font-family:var(--font-mono);font-size:14px;width:24px;height:24px;cursor:pointer;border-radius:3px;line-height:1;padding:0' }, '\u2212');
+        rmBtn.title = 'Remove this incident';
+        rmBtn.onclick = () => {
+          syncIncFromDOM();
+          window._incidentData.splice(i, 1);
+          if (window._incidentData.length === 0) {
+            window._incidentData.push({ severity: 'Low severity · Minor impact', type: '', bu: '', summary: '', learning: '', riddor: false, lti: false, status: 'Under investigation' });
+          }
+          renderIncidentCards(window._incidentData);
+        };
+        hdr.appendChild(rmBtn);
+        div.appendChild(hdr);
+
+        // Severity select
+        const sel = makeEl('select', { id: 'inc-'+i+'-severity', style: 'width:100%;background:#0c1614;border:1px solid #B2D23330;color:#fff;padding:7px 8px;font-family:var(--font-mono);font-size:11px;border-radius:3px;margin-bottom:6px' });
+        SEVERITY_ORDER.forEach(s => {
+          const opt = makeEl('option', {}, s);
+          opt.value = s;
+          if (s === inc.severity) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        div.appendChild(sel);
+
+        // Text inputs
+        [
+          ['inc-'+i+'-type', inc.type,   'Mechanism  e.g. Slip / Trip / Fall'],
+          ['inc-'+i+'-bu',   inc.bu,     'Business unit'],
+        ].forEach(([id, val, ph]) => {
+          const inp = makeEl('input', { type: 'text', id, placeholder: ph, style: 'margin-bottom:6px' });
+          inp.value = val || '';
+          div.appendChild(inp);
+        });
+
+        // Textareas
+        [
+          ['inc-'+i+'-summary',  inc.summary,  'What happened...', 'margin-bottom:6px;min-height:54px'],
+          ['inc-'+i+'-learning', inc.learning, "What we\'re doing...", 'margin-bottom:6px;min-height:44px'],
+        ].forEach(([id, val, ph, style]) => {
+          const ta = makeEl('textarea', { id, placeholder: ph, style });
+          ta.textContent = val || '';
+          div.appendChild(ta);
+        });
+
+        // Status
+        const statusInp = makeEl('input', { type: 'text', id: 'inc-'+i+'-status', placeholder: 'Investigation status', style: 'margin-bottom:8px' });
+        statusInp.value = inc.status || '';
+        div.appendChild(statusInp);
+
+        // Checkboxes
+        const cbRow = makeEl('div', { style: 'display:flex;gap:20px;margin-top:2px' });
+        ['riddor','lti'].forEach(field => {
+          const lbl = makeEl('label', { style: 'font-family:var(--font-mono);font-size:10px;color:#ffffff55;display:flex;align-items:center;gap:6px;cursor:pointer' });
+          const cb = makeEl('input', { type: 'checkbox', id: 'inc-'+i+'-'+field });
+          cb.checked = inc[field] || false;
+          lbl.appendChild(cb);
+          lbl.appendChild(document.createTextNode(' ' + field.toUpperCase()));
+          cbRow.appendChild(lbl);
+        });
+        div.appendChild(cbRow);
+        incContainer.appendChild(div);
+      });
+
+      // + ADD INCIDENT button
+      const addBtn = makeEl('button', { style: 'width:100%;margin-top:10px;background:#1a3a2a;border:1px dashed #B2D23560;color:#B2D235;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.18em;padding:10px;cursor:pointer;border-radius:3px' }, '+ ADD INCIDENT');
+      addBtn.onclick = () => {
+        syncIncFromDOM();
+        window._incidentData.push({ severity: 'Low severity \u00b7 Minor impact', type: '', bu: '', summary: '', learning: '', riddor: false, lti: false, status: 'Under investigation' });
+        renderIncidentCards(window._incidentData);
+        setTimeout(() => incContainer.lastChild?.previousSibling?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      };
+      incContainer.appendChild(addBtn);
+    }
+
+    if (!window._incidentData) window._incidentData = JSON.parse(JSON.stringify(DEFAULT_INCIDENTS));
+    window._renderIncidentCards = renderIncidentCards;
+    window._syncIncFromDOM = syncIncFromDOM;
+    console.log('[BEF] Rendering', window._incidentData.length, 'incident cards to', incContainer);
+    renderIncidentCards(window._incidentData);
+
+    // ── IMS cards ─────────────────────────────────
+    const imsContainer = document.getElementById('ims-cards-edit');
+    if (!window._imsData) window._imsData = JSON.parse(JSON.stringify(DEFAULT_IMS));
+
+    function syncImsFromDOM() {
+      if (!window._imsData) return;
+      window._imsData.forEach((card, i) => {
+        card.tag   = document.getElementById('ims-'+i+'-tag')?.value   ?? card.tag;
+        card.title = document.getElementById('ims-'+i+'-title')?.value ?? card.title;
+        card.body  = document.getElementById('ims-'+i+'-body')?.value  ?? card.body;
+      });
+    }
+
+    function renderImsCards(data) {
+      imsContainer.innerHTML = '';
+
+      data.forEach((card, i) => {
+        const div = makeEl('div', { class: 'ims-card-edit', style: 'position:relative;padding-bottom:4px' });
+
+        // Header row: card label + − button
+        const hdr = makeEl('div', { style: 'display:flex;justify-content:space-between;align-items:center;margin-bottom:8px' });
+        hdr.appendChild(makeEl('span', { class: 'field-label', style: 'margin:0;color:#B2D235;font-size:10px;letter-spacing:0.18em' }, 'CARD ' + (i+1) + ' OF ' + data.length));
+
+        const rmBtn = makeEl('button', { style: 'background:#1a0000;border:1px solid #ff444455;color:#ff8888;font-family:var(--font-mono);font-size:14px;width:24px;height:24px;cursor:pointer;border-radius:3px;line-height:1;padding:0' }, '−');
+        rmBtn.title = 'Remove this card';
+        rmBtn.onclick = () => {
+          syncImsFromDOM();
+          window._imsData.splice(i, 1);
+          renderImsCards(window._imsData);
+        };
+        hdr.appendChild(rmBtn);
+        div.appendChild(hdr);
+
+        // Tag
+        const tagInp = makeEl('input', { type: 'text', id: 'ims-'+i+'-tag', placeholder: 'Tag  e.g. Audit, IMS, Permits', style: 'margin-bottom:6px' });
+        tagInp.value = card.tag || '';
+        div.appendChild(tagInp);
+
+        // Title
+        const titleInp = makeEl('input', { type: 'text', id: 'ims-'+i+'-title', placeholder: 'Card title', style: 'margin-bottom:6px' });
+        titleInp.value = card.title || '';
+        div.appendChild(titleInp);
+
+        // Body
+        const bodyTA = makeEl('textarea', { id: 'ims-'+i+'-body', placeholder: 'Card body text...', style: 'min-height:56px' });
+        bodyTA.textContent = card.body || '';
+        div.appendChild(bodyTA);
+
+        imsContainer.appendChild(div);
+      });
+
+      // + ADD CARD button at bottom
+      const addBtn = makeEl('button', { style: 'width:100%;margin-top:10px;background:#1a3a2a;border:1px dashed #B2D23560;color:#B2D235;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.18em;padding:10px;cursor:pointer;border-radius:3px' }, '+ ADD CARD');
+      addBtn.onclick = () => {
+        syncImsFromDOM();
+        window._imsData.push({ tag: '', title: '', body: '' });
+        renderImsCards(window._imsData);
+        // Scroll to new card
+        setTimeout(() => imsContainer.lastChild?.previousSibling?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      };
+      imsContainer.appendChild(addBtn);
+    }
+
+    window._renderImsCards = renderImsCards;
+    window._syncImsFromDOM = syncImsFromDOM;
+    console.log('[BEF] Rendering', window._imsData.length, 'IMS cards to', imsContainer);
+    renderImsCards(window._imsData);
+
+    // ── Priorities ────────────────────────────────
+    const priContainer = document.getElementById('priorities-edit');
+    if (!window._priorityData) window._priorityData = JSON.parse(JSON.stringify(DEFAULT_PRIORITIES));
+
+    function syncPriFromDOM() {
+      if (!window._priorityData) return;
+      window._priorityData.forEach((p, i) => {
+        p.title = document.getElementById('pri-'+i+'-title')?.value ?? p.title;
+        p.body  = document.getElementById('pri-'+i+'-body')?.value  ?? p.body;
+      });
+    }
+
+    function renderPriorityCards(data) {
+      priContainer.innerHTML = '';
+      data.forEach((p, i) => {
+        const div = makeEl('div', { class: 'ims-card-edit', style: 'position:relative;padding-bottom:4px' });
+
+        const hdr = makeEl('div', { style: 'display:flex;justify-content:space-between;align-items:center;margin-bottom:8px' });
+        hdr.appendChild(makeEl('span', { class: 'field-label', style: 'margin:0;color:#B2D235;font-size:10px;letter-spacing:0.18em' }, 'PRIORITY ' + (i+1) + ' OF ' + data.length));
+        const rmBtn = makeEl('button', { style: 'background:#1a0000;border:1px solid #ff444455;color:#ff8888;font-family:var(--font-mono);font-size:14px;width:24px;height:24px;cursor:pointer;border-radius:3px;line-height:1;padding:0' }, '\u2212');
+        rmBtn.title = 'Remove this priority';
+        rmBtn.onclick = () => {
+          syncPriFromDOM();
+          window._priorityData.splice(i, 1);
+          if (window._priorityData.length === 0) window._priorityData.push({ title: '', body: '' });
+          renderPriorityCards(window._priorityData);
+        };
+        hdr.appendChild(rmBtn);
+        div.appendChild(hdr);
+
+        const tLabel = makeEl('label', { class: 'field-label' }, 'Title');
+        const tInp = makeEl('input', { type: 'text', id: 'pri-'+i+'-title', placeholder: 'Priority title', style: 'margin-bottom:6px' });
+        tInp.value = p.title || '';
+        const dLabel = makeEl('label', { class: 'field-label' }, 'Description');
+        const dTA = makeEl('textarea', { id: 'pri-'+i+'-body', placeholder: 'Short description...', style: 'min-height:52px' });
+        dTA.textContent = p.body || '';
+
+        div.appendChild(tLabel); div.appendChild(tInp);
+        div.appendChild(dLabel); div.appendChild(dTA);
+        priContainer.appendChild(div);
+      });
+
+      const addBtn = makeEl('button', { style: 'width:100%;margin-top:10px;background:#1a3a2a;border:1px dashed #B2D23560;color:#B2D235;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.18em;padding:10px;cursor:pointer;border-radius:3px' }, '+ ADD PRIORITY');
+      addBtn.onclick = () => {
+        syncPriFromDOM();
+        window._priorityData.push({ title: '', body: '' });
+        renderPriorityCards(window._priorityData);
+        setTimeout(() => priContainer.lastChild?.previousSibling?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      };
+      priContainer.appendChild(addBtn);
+    }
+
+    window._renderPriorityCards = renderPriorityCards;
+    window._syncPriFromDOM = syncPriFromDOM;
+    console.log('[BEF] Rendering', window._priorityData.length, 'priority cards');
+    renderPriorityCards(window._priorityData);
+  }
+
+  // Run buildEditFields after page is fully ready
+  // Use multiple attempts to handle Babel transpile time
+  function tryBuildEditFields() {
+    try {
+      buildEditFields();
+      window.buildEditFields = tryBuildEditFields;
+      console.log('buildEditFields: OK');
+    } catch(e) {
+      console.warn('buildEditFields retry:', e);
+      setTimeout(tryBuildEditFields, 500);
+    }
+  }
+  // Expose immediately so script3 can call it
+  window.buildEditFields = tryBuildEditFields;
+
+  // toggleNewsFields stays here as it needs DOM access
+
+
+    const style = document.getElementById('f-newsStyle').value;
+    ['award','stat','quote','milestone','alert'].forEach(s => {
+      const el = document.getElementById(`news-${s}-fields`);
+      if (el) el.style.display = s === style ? 'block' : 'none';
+    });
+  }
+
+</script>
+
+<script type="text/babel">
+  const { useState, useEffect, useCallback } = React;
+
+  const GC_LOGO_WHITE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABaCAYAAAD99hnWAAAHOklEQVR4nO2c2dLkJgyF7VTe/5U7FxknFAVajwDZ+q5mulmErYPE0v99beL3+/0k5e77vqNtKYoZf6/qSCoIdJ8lsMJDuPN4hFHOXezmr8jGSxxFdkIE8vsDV24mghJHcQpwR/SuNRDieGwooRVeoBHEuzOFFEdRIIDMsBqnvO/77stHCqOiSOEhdJHes1oc1HcVaQoJy1IatDikmwC1Hik8uJxG66TtZ1H9UX2XSAotITN464gIcVjSoaefUd0SSiElxFEQTolYI4yil8WW4ruY7mJZUp2otosiEvUuVpQ4pKfviP5KhIWU0Nu8q511llIVhZWQc5D7D1y5neIoIRUSVBEE5VRo56zIUUQBjyBc5ChxFJlYetVkpThqsV4gEAvE8/sOaX0t5eBFNLBdrFXioE7IV1B/bOJbLPujDQh271R5+i7B7MF7kwIikOjooY0aaGdEjOH3q7+wkpHQCIL6+W1kOkU5bkQEKpHk4sgUCyGMUxfwJZJchAkEfUVd24YXz64dV3elSHYL0tL/bptb3AJBDQSZTkVHD27MKyIg9ZubWVtaQVsOffs6mmfxlEWcYaH8cnuKhRTGiujR90HNdtSu26xe5C4dJxRLW6hybVnEpg8qCoUIRLPbtHMrVsvogUujCYfG7gzXaxDRczQZrbLhYelVkxZ0jml1mhNy3dXiOF1cI3bZvCXFQs+AK53cE7pXLD6ls26kLdr1gddGb6ShgAlEMpiIcw202LgFq8epLGsOTX+zFPCUiGFZq1naRI55yV2slpPF4UFrh3XtYt1xmrV1QorJYU2dl65BvALInFatJmJ9hmzvFFaMK3yRfv8hInJ429TsSkXsu58S/d4KQkAQgXAvGuUIEWIrCgrVGmTmnBGLr1H7pwvDGn2Kc3FHEOSicdQGKp0ata2tY7GhxLGPLQeFGsfybN1liRrFuwn5qyaW2flueD6LEod1i/W6dHeBVoqb6gsd5U+ZtCxj1hK2iyXZ9RmJ4ql7yksYwdkXabtWvB5bTnkHK8fcYzoo5Bbfnhkraq2hPRSTbDCc4kAt6EM1TXu7zlsibTSfpLcPlXK+FWsWSV/WtO9EEXjtynhwuOtduFIsTy7f413QR710b7tRtlnbRExkEfWj+7C+B/ht3lVboStnQeuOWrSNWrs0E5qkTeT4pBHC8i5cwrJWbGlTrMdwqVGni4Oitf0Um05Eu/6z1okg5O9HfUEcxTfY/pt0KRGi61OKjOLLZnc2e7f+ORhNee1eOKptihNe9mjsq2yypk79Z7ufIcWW36SfJI6njXbLGmHXF/jC+Lf90QYE6H1x7Yx44hlJgeV4gcwc9gTn/MIMiuSEd6Zl2SIdka9r2rCmZSesK97KqTcTKI5yhP7hWaIHYrcLEbWid9009TlbuDaQB5LZFulLIkh/kHjCdQftbKad+bhIZL1xgHImrbNbntXJji9lyRqkfVCINMtv0f+2SOyx9jmr5xmDdwew3bGL6tNb7ySOX6Sv4O5ov/O+5L4+altaUg4RkdHjz0aak3SOXeG8P40flZGmRtY1hqQdS1vStQlXNvPGx2sEEgFiM0BKtANpnJ2rMyqbcYdKQqVYBqI2GTRtopyxTys97WaNEhQlECWcE1ic5CTH8o7vpLEgKIEsIkP6EW1jhmfQUwIp/gOVar2J1yzSrTslq052s6Ueb110a0kXQZCOZj3NRvX/Ftpn8rbnk04gFJFXR3a3ewrZ7lJ5eZVAruv9Diph1zN447NPuQbh8uP2O8/VkVk/o8t4b3SOGdrxZ44wKQWiwXu5D9H2DgehJgkpmokI0d6JpE2xVu00IS78eerv5uvjTymQNsQjXkDbDnIRmt05HlDjzxY9ruuwXxR6iUynNH1Y7k9xtlDC5dpFrg92jb/4KBln1YeVv20piqIoiqIoiuJfvpxDf3nshZHfH3bbUWBIe5Iu/b307Bo84qRZYs8JaH5brmnrC1uzqQ8Keywn4eiXLDm8XCEmyx9pkIA+O1o1sVgje6oIMooG1Gmt5jJh/z1V9zl8Gx3UzT6nys7qjOr1ds36ktjAHT5yz4B6NpKy3HeSstq2ZxnFjBQCeQbVPnzJIKUPY/RwuVmPanfW3szhqJcsSRGlM6Pk2c0EzJXVfqb5nipLvQtEdEqRYmnDOpXmWL7j0qb2u/7fXL3ZzGdJZTz1qP9zn2va8NhiWf947UohEIrRTNrmm+2/ZyG3/U5CX7Ztgwr1/WfacO+lFZA26nDtUv+f2cC1T2UMswjKTYDUOEakFQjl9LMZvYdKXVAzYG8bV3bEKK3QtiV1GqqcJa3j6N+VRpAzMaBsu66EAulnnzZCtJ+P6lof3KgPSft9Pan4+npUmqGJBNJx9HAi4sbNldfSZgdUuVG/2r7TCeS67Nu52qhApUZU+Vm9maNTwvGkYB5HtKScUvslbVvfMff5ypT29fRObJ2Bi7yUmggsuX7xLv4BaspZVCfBv9gAAAAASUVORK5CYII=";
+  const GC_LOGO_NATURAL = "data:image/png;base64,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";
+
+  const PAL = {
+    ink: "#1a2a23",
+    paper: "#ffffff",
+    warmGrey: "#E6EBE3",
+    dark: "#294238",
+    light: "#B2D235",
+    mid: "#50B748",
+    orange: "#F57821",
+    red: "#F57821",
+    amber: "#B2D235",
+  };
+
+  // ---- Collect data from edit panel ----
+  function getData() {
+    const g = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const gn = (id) => { const el = document.getElementById(id); return el ? (parseInt(el.value) || 0) : 0; };
+
+    const events = gn('f-events');
+    const hazards = gn('f-hazards');
+    const nearMisses = gn('f-nearMisses');
+    const incidents = gn('f-incidents');
+    const harmIncidents = gn('f-harmIncidents');
+    const riddor = gn('f-riddor');
+    const lostTime = gn('f-lostTime');
+    const bestPractice = gn('f-bestPractice');
+    const ratio = g('f-ratio') || `${Math.round((hazards + nearMisses) / Math.max(1, incidents))}:1`;
+
+    const coverLineOverride = g('f-coverLine').trim();
+    const coverLine = coverLineOverride || buildCoverLine(events, incidents, harmIncidents, riddor);
+
+    // IMS: read from DOM (populated by buildEditFields), fall back to window store, then hardcoded defaults
+    const IMS_DEFAULTS = [
+      { tag: "Audit", title: "Constructionline — Building Safety Act", body: "Submission with Constructionline for AI to review documentation & evidence. All other areas approved and verified." },
+      { tag: "Internal", title: "Temporary Works gap analysis", body: "Internal audit gap analysis completed and report distributed." },
+      { tag: "Tooling", title: "IMS Phone App", body: "Continued development; running noticeably faster. Quality team now using the new app to complete Q checks." },
+      { tag: "Permits", title: "Permit procedure updates", body: "Permit findings actively being closed. Next: re-issue IMS documentation to reflect updated permit processes." },
+      { tag: "Templates", title: "SafetyCulture updates", body: "New concrete inspection checklists added to the site report template. Rope access supervisor checklist added to induction & competency checks." },
+      { tag: "Mapping", title: "Procurement process mapping", body: "Cosmin & Phill attending in-person workshops in Billericay the week after next." },
+    ];
+    const _imsStore = window._imsData || IMS_DEFAULTS;
+    const ims = _imsStore.map((def, i) => ({
+      tag: document.getElementById('ims-'+i+'-tag')?.value || def.tag,
+      title: document.getElementById('ims-'+i+'-title')?.value || def.title,
+      body: document.getElementById('ims-'+i+'-body')?.value || def.body,
+    })).filter(c => c.title);
+
+    const PRI_DEFAULTS = [
+      { title: "HSQE KPI Dashboard", body: "Implement suggested improvements." },
+      { title: "RAMS Creator in IMS App", body: "Build out the in-app RAMS workflow." },
+      { title: "Update permit procedures", body: "Re-issue IMS docs to reflect new permit processes." },
+    ];
+    const _priStore = window._priorityData || PRI_DEFAULTS;
+    const priorities = _priStore.map((def, i) => ({
+      n: String(i+1).padStart(2,'0'),
+      title: document.getElementById('pri-'+i+'-title')?.value || def.title,
+      body: document.getElementById('pri-'+i+'-body')?.value || def.body,
+    })).filter(p => p.title);
+
+    const buNames = ["Maintenance","Infrastructure & Utilities","LDE","GC Ireland","Central Functions","Land & Water Solutions"];
+    const buDefRed   = [3,5,1,0,0,0];
+    const buDefAmber = [197,66,20,16,0,7];
+    const businessUnits = buNames.map((name, i) => ({
+      name,
+      red:   parseInt(document.getElementById('bu-'+i+'-red')?.value)   || buDefRed[i],
+      amber: parseInt(document.getElementById('bu-'+i+'-amber')?.value) || buDefAmber[i],
+    }));
+
+    // Sparklines — read from new inputs
+    const parseSpark = (id, fallback) => {
+      const el = document.getElementById(id);
+      if (!el || !el.value.trim()) return fallback;
+      return el.value.split(',').map(v => parseFloat(v.trim())).filter(n => !isNaN(n));
+    };
+
+    // Hazard mix — read from new inputs
+    const hmDefLabels = ["DDD Trees","Vegetation","Slips, Trips & Falls","Other hazards"];
+    const hmDefVals = [52,43,41,165];
+    const hazardMix = [0,1,2,3].map(i => ({
+      label: g('hm-'+i+'-label') || hmDefLabels[i],
+      value: parseInt(document.getElementById('hm-'+i)?.value) || hmDefVals[i]
+    }));
+
+    // Clients — read from new inputs
+    const clients = [0,1,2,3,4,5].map(i => ({
+      name: document.getElementById('cl-'+i+'-name')?.value || ['Morrisons','Severn Trent','National Grid','Network Rail','Tesco','Moto'][i],
+      value: parseInt(document.getElementById('cl-'+i+'-val')?.value) || [30,28,18,14,11,9][i]
+    })).filter(c => c.value > 0);
+
+    // Collect incidents from dynamic cards
+    const incidentCount = (window._incidentData || []).length;
+    const _defaultInc = [{ severity: 'Low severity · Minor impact', type: 'Slip / Trip / Fall', bu: 'Maintenance', summary: 'An operative reversing a rotavator close to a fenceline caught his hand on the fence and suffered a minor soft tissue injury.', learning: 'Reinforcing situational awareness near perimeter features during reverse manoeuvres.', status: 'Under investigation', riddor: false, lti: false }];
+    const harmEvents = (window._incidentData || _defaultInc).map((_, i) => ({
+      severity: g(`inc-${i}-severity`) || 'Low severity · Minor impact',
+      type: g(`inc-${i}-type`) || '',
+      bu: g(`inc-${i}-bu`) || '',
+      summary: g(`inc-${i}-summary`) || '',
+      learning: g(`inc-${i}-learning`) || '',
+      status: g(`inc-${i}-status`) || 'Under investigation',
+      riddor: document.getElementById(`inc-${i}-riddor`)?.checked || false,
+      lti: document.getElementById(`inc-${i}-lti`)?.checked || false,
+    }));
+    const severityRank = (s) => SEVERITY_ORDER.indexOf(s) === -1 ? 99 : SEVERITY_ORDER.indexOf(s);
+    harmEvents.sort((a, b) => severityRank(a.severity) - severityRank(b.severity));
+    const hazardContext = g('f-hazardContext') || '';
+
+    const rospStreak = gn('f-rospStreak') || 16;
+    const newsStyle = g('f-newsStyle') || 'award';
+
+    const news = {
+      style: newsStyle,
+      eyebrow: g('f-newsEyebrow') || 'ROSPA · ORDER OF DISTINCTION',
+      badge: g('f-newsBadge') || '★ AWARDED',
+      body: g('f-newsBody') || 'Awarded in recognition of 16 consecutive RoSPA Gold Awards for Health & Safety performance.',
+      line1: g('f-newsLine1') || 'Sixteen',
+      line2: g('f-newsLine2') || 'consecutive',
+      line3: g('f-newsLine3') || 'Golds.',
+      streak: rospStreak,
+      period: g('f-rospPeriod') || '01 Jan 2025 → 01 Jan 2026',
+      startYear: 2026 - rospStreak,
+      statNumber: g('f-statNumber') || '50,000',
+      statUnit: g('f-statUnit') || 'sites maintained',
+      statSecondary: g('f-statSecondary') || '',
+      quoteText: g('f-quoteText') || '',
+      quoteAttrib: g('f-quoteAttrib') || '',
+      quoteContext: g('f-quoteContext') || '',
+      milestoneHead: g('f-milestoneHead') || '',
+      milestoneSteps: (g('f-milestoneSteps') || '').split('\n').filter(Boolean),
+      milestoneCurrent: g('f-milestoneCurrent') || '',
+      alertHead: g('f-alertHead') || '',
+      alertLevel: g('f-alertLevel') || 'advisory',
+      alertAction: g('f-alertAction') || '',
+      alertOwner: g('f-alertOwner') || '',
+    };
+
+    return {
+      periodLong: g('f-periodLong') || '21 — 27 April 2026',
+      dashNote: g('f-dashNote') || 'Eight-week trend on each card. Strong reporting volume, severity remains low.',
+      riskNote: g('f-riskNote') || 'Volume tracks contract size. Tree, surface and perimeter hazards are being observed regularly by GC teams.',
+      periodShort: g('f-periodShort') || 'Wk 17 · 21–27 Apr 2026',
+      issue: g('f-issue') || '17',
+      coverLine,
+      stats: { eventsTotal: events, hazards, incidents, nearMisses, bestPractice, riddor, lostTime, ratio, harmIncidents },
+      businessUnits,
+      hazardMix,
+      clients,
+      env: {
+        incidents: gn('f-envIncidents'),
+        note: g('f-envNote'),
+      },
+      incidents: harmEvents,
+      sparklines: {
+        events:    parseSpark('spark-events',    [288,302,270,311,295,320,308,326]),
+        hazards:   parseSpark('spark-hazards',   [262,278,247,286,270,295,282,301]),
+        incidents: parseSpark('spark-incidents', [4,6,3,8,5,9,6,7]),
+        near:      parseSpark('spark-near',      [10,7,11,9,8,6,9,8]),
+        bp:        parseSpark('spark-bp',        [6,8,5,9,7,10,8,11]),
+      },
+      hazardContext,
+      ims,
+      priorities,
+      news,
+    };
+  }
+
+  function buildCoverLine(events, incidents, harm, riddor) {
+    const words = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
+    const evW = events <= 10 ? words[events] : String(events);
+    const incStr = harm === 0 ? 'zero incidents.' : harm === 1 ? 'one incident.' : `${harm} incidents.`;
+    return `Seven days. ${evW} events. ${incStr}`;
+  }
+
+  // ---- Shared components ----
+  function GCFlow({ corner = "tr", tone = "light", scale = 1, opacity = 0.95 }) {
+    const stroke = tone === "mid" ? PAL.mid : PAL.light;
+    const w = 720 * scale, h = 520 * scale;
+    const pos = {
+      tr: { top: -40, right: -60 },
+      tl: { top: -40, left: -60 },
+      br: { bottom: -40, right: -60 },
+      bl: { bottom: -40, left: -60 },
+    };
+    const tf = {
+      tr: `translate(0,0)`,
+      tl: `translate(${w},0) scale(-1,1)`,
+      br: `translate(0,${h}) scale(1,-1)`,
+      bl: `translate(${w},${h}) scale(-1,-1)`,
+    };
+    return (
+      <svg className="gc-curve" width={w} height={h} viewBox="0 0 720 520"
+        style={{ ...pos[corner], opacity }} aria-hidden>
+        <g transform={tf[corner]} fill="none" stroke={stroke} strokeLinecap="round">
+          <path d="M -50 60 Q 220 -40 460 90 T 820 220" strokeWidth="6" />
+          <path d="M -50 130 Q 240 30 500 170 T 820 320" strokeWidth="4" opacity="0.85" />
+          <path d="M -50 210 Q 260 110 540 260 T 820 420" strokeWidth="3" opacity="0.6" />
+          <path d="M -50 300 Q 280 220 580 360 T 820 500" strokeWidth="2" opacity="0.4" />
+        </g>
+      </svg>
+    );
+  }
+
+  function GCMark({ size = 48, on = "dark" }) {
+    const src = on === "dark" ? GC_LOGO_WHITE : GC_LOGO_NATURAL;
+    return (
+      <img src={src} alt="Ground Control"
+        style={{ height: size, width: "auto", objectFit: "contain" }} />
+    );
+  }
+
+  function Spark({ data, color = PAL.light, w = 220, h = 50 }) {
+    const max = Math.max(...data), min = Math.min(...data);
+    const pts = data.map((v, i) => {
+      const x = (i / (data.length - 1)) * w;
+      const y = h - ((v - min) / Math.max(1, max - min)) * (h - 8) - 4;
+      return `${x},${y}`;
+    }).join(" ");
+    const lastY = h - ((data[data.length-1] - min) / Math.max(1, max - min)) * (h - 8) - 4;
+    return (
+      <svg width={w} height={h} aria-hidden>
+        <polyline fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" points={pts} />
+        <circle cx={w} cy={lastY} r="4" fill={color} />
+      </svg>
+    );
+  }
+
+  function DarkLogoStamp() {
+    return (
+      <div style={{ position: "absolute", bottom: 44, right: 80,
+        display: "flex", alignItems: "center", gap: 16,
+        borderTop: `1px solid rgba(255,255,255,0.15)`, paddingTop: 16 }}>
+        <img src={GC_LOGO_NATURAL} alt="Ground Control"
+          style={{ height: 36, width: "auto", opacity: 0.85 }} />
+        <div className="t-mono" style={{ fontSize: 11, color: "#fff", opacity: 0.4, letterSpacing: "0.18em" }}>
+          HUMAN NATURE: AT ITS BEST
+        </div>
+      </div>
+    );
+  }
+
+  function SlideHeader({ num, label, right, rightColor, dark }) {
+    const c = dark ? PAL.light : PAL.dark;
+    return (
+      <div style={{ position: "absolute", top: 64, left: 80, right: 80,
+        display: "flex", justifyContent: "space-between", alignItems: "baseline",
+        borderBottom: `1px solid ${dark ? PAL.light + '33' : PAL.dark + '33'}`, paddingBottom: 22 }}>
+        <div className="t-mono" style={{ fontSize: 18, color: c, letterSpacing: "0.2em" }}>{num} / {label.toUpperCase()}</div>
+        {right && <div className="t-mono" style={{ fontSize: 18, color: rightColor || (dark ? PAL.light : PAL.dark), opacity: rightColor ? 1 : 0.6, letterSpacing: "0.16em" }}>{right}</div>}
+      </div>
+    );
+  }
+
+  function SlideFooter({ d }) {
+    return (
+      <div style={{ position: "absolute", bottom: 56, left: 80, right: 80,
+        borderTop: `1px solid ${PAL.dark}25`, paddingTop: 20,
+        display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <GCMark size={36} on="light" />
+        <div className="t-mono" style={{ fontSize: 12, color: PAL.dark, opacity: 0.45, letterSpacing: "0.18em" }}>
+          HSQE SNAPSHOT · {d.periodShort.toUpperCase()} · Human Nature: At Its Best
+        </div>
+      </div>
+    );
+  }
+
+  // ---- SLIDES ----
+
+  function SlideCover({ d }) {
+    const ref = React.useRef(null);
+
+    React.useEffect(() => {
+      const el = ref.current;
+      if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const ctx = gsap.context(() => {
+        // Animate SVG curve paths drawing in
+        const paths = el.querySelectorAll('.gc-curve path');
+        paths.forEach(p => {
+          try {
+            const len = p.getTotalLength();
+            gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+          } catch(e) {}
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+        });
+
+        // Curves trace in
+        tl.to(paths, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', stagger: 0.12 }, 0);
+
+        // Masthead drops in
+        const mast = el.querySelector('.cover-masthead'); if(mast) tl.fromTo(mast, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, 0.1);
+
+        // Period chip slides in
+        const period = el.querySelector('.cover-period'); if(period) tl.fromTo(period, { x: -20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power2.out' }, 0.45);
+
+        // "Snapshot." appears instantly — no animation
+        const titleEl = el.querySelector('.cover-title-main');
+        if (titleEl) gsap.set(titleEl, { opacity: 1 });
+
+        // Subline types in with blinking cursor
+        const titleSub = el.querySelector('.cover-title-sub');
+        if (titleSub) {
+          const subText = titleSub.dataset.text || titleSub.textContent.trim();
+          titleSub.dataset.text = subText;
+          titleSub.innerHTML = '<span class="sub-typed"></span><span class="sub-cursor">|</span>';
+          const typedSpan = titleSub.querySelector('.sub-typed');
+          const cursorSpan = titleSub.querySelector('.sub-cursor');
+          // Cursor blink via CSS — inject style once
+          if (!document.getElementById('cursor-style')) {
+            const s = document.createElement('style');
+            s.id = 'cursor-style';
+            s.textContent = '.sub-cursor { display:inline-block; animation: blink 0.7s steps(1) infinite; margin-left:2px; } @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }';
+            document.head.appendChild(s);
+          }
+          const obj2 = { len: 0 };
+          tl.to(obj2, {
+            len: subText.length,
+            duration: subText.length * 0.045,
+            ease: 'steps(' + subText.length + ')',
+            onUpdate() { typedSpan.textContent = subText.slice(0, Math.round(obj2.len)); },
+            onComplete() { typedSpan.textContent = subText; }
+          }, 0.6);
+        }
+
+        // BU label then columns stagger
+        const buLabel = el.querySelector('.cover-bu-label'); const buCols = el.querySelectorAll('.cover-bu-col');
+        if(buLabel) tl.fromTo(buLabel, { opacity: 0 }, { opacity: 0.85, duration: 0.35 }, 1.4);
+        if(buCols.length) tl.fromTo(buCols, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out', stagger: 0.06 }, 1.5);
+
+        // Ticker fades in then numbers count up
+        const ticker = el.querySelector('.cover-ticker'); if(ticker) tl.fromTo(ticker, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.55);
+
+        el.querySelectorAll('.ticker-num[data-val]').forEach((num, i) => {
+          const target = parseFloat(num.dataset.val);
+          if (isNaN(target)) return;
+          const obj = { val: 0 };
+          tl.to(obj, {
+            val: target, duration: 1.0, ease: 'power2.out',
+            snap: { val: 1 },
+            onUpdate() { num.textContent = Math.round(obj.val); }
+          }, 1.25 + i * 0.07);
+        });
+
+      }, el);
+
+      return () => ctx.revert();
+    }, []);
+
+    return (
+      <section className="slide dark" ref={ref}>
+        <GCFlow corner="tr" tone="light" scale={1.5} opacity={0.5} />
+        <GCFlow corner="br" tone="mid" scale={0.9} opacity={0.3} />
+
+        <div className="cover-masthead" style={{ position: "absolute", top: 64, left: 80, right: 80,
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          borderBottom: `1px solid ${PAL.light}44`, paddingBottom: 22 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+            <GCMark size={44} on="dark" />
+            <div style={{ width: 1, height: 32, background: `${PAL.light}44` }} />
+            <div className="t-mono" style={{ fontSize: 16, color: PAL.light, letterSpacing: "0.22em" }}>HSQE / WEEKLY DESK</div>
+          </div>
+          <div className="t-mono" style={{ fontSize: 16, color: "#fff", opacity: 0.6, letterSpacing: "0.18em" }}>
+            ISSUE №{d.issue} · VOL. 2026
+          </div>
+        </div>
+
+        <div className="cover-period" style={{ position: "absolute", top: 170, left: 80, display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ width: 10, height: 10, background: PAL.orange }} />
+          <div className="t-mono" style={{ fontSize: 18, color: "#fff", letterSpacing: "0.2em" }}>{d.periodLong.toUpperCase()}</div>
+        </div>
+
+        <div style={{ position: "absolute", top: 218, left: 80, right: 80 }}>
+          <div className="cover-title-main t-display" style={{ fontSize: 260, lineHeight: 0.88, letterSpacing: "-0.02em" }}>
+            Snapshot<span style={{ color: PAL.light }}>.</span>
+          </div>
+          <div className="cover-title-sub t-display" style={{ fontSize: 56, color: PAL.light, marginTop: 22, maxWidth: 1500, lineHeight: 1.15 }}>
+            Seven days. {d.stats.eventsTotal} events. {d.stats.harmIncidents === 0 ? 'Zero incidents.' : d.stats.harmIncidents === 1 ? 'One incident.' : `${d.stats.harmIncidents} incidents.`}
+          </div>
+        </div>
+
+        <div style={{ position: "absolute", top: 720, left: 80, right: 80 }}>
+          <div className="cover-bu-label t-mono" style={{ fontSize: 13, color: PAL.light, letterSpacing: "0.22em", marginBottom: 14 }}>
+            BY BUSINESS UNIT · <span style={{ color: PAL.red }}>RED</span> loss-events · <span style={{ color: PAL.amber }}>AMBER</span> near-miss + hazards
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", borderTop: `1px solid ${PAL.light}30` }}>
+            {d.businessUnits.map((bu, i) => (
+              <div key={bu.name} className="cover-bu-col" style={{ borderLeft: i ? `1px solid ${PAL.light}20` : "none", padding: "14px 18px 0" }}>
+                <div className="t-display" style={{ fontSize: 46, lineHeight: 1, letterSpacing: "-0.01em" }}>
+                  <span style={{ color: PAL.red }}>{bu.red}</span>
+                  <span style={{ color: `${PAL.light}55`, margin: "0 6px", fontWeight: 400 }}>|</span>
+                  <span style={{ color: PAL.amber }}>{bu.amber}</span>
+                </div>
+                <div className="t-body" style={{ fontSize: 13, color: "#fff", marginTop: 8, lineHeight: 1.25, opacity: 0.85 }}>{bu.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="cover-ticker" style={{ position: "absolute", bottom: 44, left: 80, right: 80,
+          display: "grid", gridTemplateColumns: "repeat(5, 1fr)",
+          borderTop: `1px solid ${PAL.light}44`, paddingTop: 16 }}>
+          {[
+            ["EVENTS", d.stats.eventsTotal],
+            ["RATIO", d.stats.ratio],
+            ["RIDDOR", d.stats.riddor],
+            ["LTI", d.stats.lostTime],
+            ["BEST PRACTICE", d.stats.bestPractice],
+          ].map(([k, v], i) => (
+            <div key={k} style={{ borderLeft: i ? `1px solid ${PAL.light}28` : "none", paddingLeft: i ? 28 : 0 }}>
+              <div className="t-mono" style={{ fontSize: 12, color: PAL.light, letterSpacing: "0.2em" }}>{k}</div>
+              <div className="t-display ticker-num" data-val={typeof v === 'number' ? v : ''}
+                style={{ fontSize: 44, color: "#fff", marginTop: 4 }}>{v}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  function SlideDashboard({ d }) {
+    const ref = React.useRef(null);
+    const [counts, setCounts] = React.useState({
+      events: 0, hazards: 0, incidents: 0, near: 0, bp: 0
+    });
+
+    React.useEffect(() => {
+      const el = ref.current;
+      if (!el) return;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+        });
+
+        // Header slides down
+        tl.fromTo('.dash-header', { y: -16, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0);
+
+        // Headline and sub fade up
+        tl.fromTo('.dash-headline', { y: 28, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.15);
+        tl.fromTo('.dash-sub', { y: 16, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.35);
+
+        // KPI cards stagger in from below
+        tl.fromTo('.dash-kpi-card', { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out', stagger: 0.09 }, 0.45);
+
+        // Numbers count up inside cards
+        const s = d.stats;
+        const targets = [
+          { key: 'events', val: s.eventsTotal },
+          { key: 'hazards', val: s.hazards },
+          { key: 'incidents', val: s.incidents },
+          { key: 'near', val: s.nearMisses },
+          { key: 'bp', val: s.bestPractice },
+        ];
+
+        if (!reduced) {
+          targets.forEach(({ key, val }, i) => {
+            const obj = { v: 0 };
+            tl.to(obj, {
+              v: val, duration: 1.1, ease: 'power2.out', snap: { v: 1 },
+              onUpdate() {
+                setCounts(prev => ({ ...prev, [key]: Math.round(obj.v) }));
+              }
+            }, 0.55 + i * 0.07);
+          });
+        } else {
+          setCounts({ events: s.eventsTotal, hazards: s.hazards,
+            incidents: s.incidents, near: s.nearMisses, bp: s.bestPractice });
+        }
+
+        // Bottom stat bars slide up
+        tl.fromTo('.dash-bottom-bar', { y: 24, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', stagger: 0.08 }, 0.7);
+
+        // Sparklines draw in via clip-path
+        tl.fromTo('.dash-spark', { clipPath: 'inset(0 100% 0 0)' },
+          { clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power2.inOut', stagger: 0.1 }, 0.9);
+
+      }, el);
+
+      return () => ctx.revert();
+    }, []);
+
+    const s = d.stats;
+    const sp = d.sparklines || {};
+    const hist = {
+      events:    sp.events    || [288,302,270,311,295,320,308,s.eventsTotal],
+      hazards:   sp.hazards   || [262,278,247,286,270,295,282,s.hazards],
+      incidents: sp.incidents || [4,6,3,8,5,9,6,s.incidents],
+      near:      sp.near      || [10,7,11,9,8,6,9,s.nearMisses],
+      bp:        sp.bp        || [6,8,5,9,7,10,8,s.bestPractice],
+    };
+
+    const cardData = [
+      { label: "EVENTS",        val: counts.events,    sparkData: hist.events,    color: PAL.light,  accent: null },
+      { label: "HAZARDS",       val: counts.hazards,   sparkData: hist.hazards,   color: PAL.light,  accent: null },
+      { label: "INCIDENTS",     val: counts.incidents, sparkData: hist.incidents, color: PAL.orange, accent: PAL.orange },
+      { label: "NEAR MISSES",   val: counts.near,      sparkData: hist.near,      color: PAL.mid,    accent: null },
+      { label: "BEST PRACTICE", val: counts.bp,        sparkData: hist.bp,        color: PAL.light,  accent: PAL.light },
+    ];
+
+    const incidentNote = s.harmIncidents === 0
+      ? `${s.harmIncidents} harm incidents · no RIDDOR threshold`
+      : `${s.harmIncidents} minor soft-tissue · no RIDDOR threshold`;
+
+    return (
+      <section className="slide" style={{ background: PAL.paper }} ref={ref}>
+        <div className="dash-header" style={{ position: "absolute", top: 64, left: 80, right: 80,
+          display: "flex", justifyContent: "space-between", alignItems: "baseline",
+          borderBottom: `1px solid ${PAL.dark}33`, paddingBottom: 22 }}>
+          <div className="t-mono" style={{ fontSize: 18, color: PAL.dark, letterSpacing: "0.2em" }}>01 / DASHBOARD</div>
+          <div className="t-mono" style={{ fontSize: 18, color: PAL.dark, opacity: 0.6, letterSpacing: "0.16em" }}>{d.periodShort}</div>
+        </div>
+
+        <div style={{ position: "absolute", top: 144, left: 80, right: 80 }}>
+          <h2 className="dash-headline t-display" style={{ fontSize: 96, color: PAL.dark, margin: 0, lineHeight: 0.95 }}>
+            The week, by the numbers.
+          </h2>
+          <p className="dash-sub t-body" style={{ fontSize: 24, color: PAL.dark, opacity: 0.65, marginTop: 16, maxWidth: 1200 }}>
+            {d.dashNote}
+          </p>
+        </div>
+
+        <div style={{ position: "absolute", top: 408, left: 80, right: 80,
+          display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14 }}>
+          {cardData.map(({ label, val, sparkData, color, accent }) => (
+            <div key={label} className="dash-kpi-card" style={{ background: PAL.dark, padding: 36, color: "#fff",
+              display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 278 }}>
+              <div className="t-mono" style={{ fontSize: 15, color: PAL.light, letterSpacing: "0.2em" }}>{label}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                <div className="t-display" style={{ fontSize: 112, lineHeight: 0.9, color: accent || "#fff" }}>{val}</div>
+                <div className="dash-spark" style={{ overflow: "hidden" }}>
+                  <Spark data={sparkData} color={color || PAL.light} w={170} h={48} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ position: "absolute", bottom: 80, left: 80, right: 80,
+          display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+          {[
+            { label: "HAZARD/NM TO INCIDENT", content: <div className="t-display" style={{ fontSize: 76, color: PAL.dark, marginTop: 8 }}>{s.ratio.split(':')[0]}<span style={{ opacity: 0.35 }}>:{s.ratio.split(':')[1]}</span></div> },
+            { label: "RIDDOR · LTI", content: <div className="t-display" style={{ fontSize: 76, color: PAL.mid, marginTop: 8 }}>{s.riddor} · {s.lostTime}</div> },
+            { label: "HARM-INCIDENT SEVERITY", content: <div className="t-display" style={{ fontSize: 34, color: PAL.dark, marginTop: 12, lineHeight: 1.15 }}>{incidentNote}</div> },
+          ].map(({ label, content }) => (
+            <div key={label} className="dash-bottom-bar" style={{ background: PAL.warmGrey, padding: 30 }}>
+              <div className="t-mono" style={{ fontSize: 13, color: PAL.dark, letterSpacing: "0.18em" }}>{label}</div>
+              {content}
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Shared animation hook ─────────────────────────────────────────────
+  function useSlideAnim(animFn) {
+    const ref = React.useRef(null);
+    React.useEffect(() => {
+      const el = ref.current;
+      if (!el) return;
+      if (typeof gsap === 'undefined') return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const ctx = gsap.context(() => animFn(el), el);
+      return () => ctx.revert();
+    }, []);
+    return ref;
+  }
+
+  // ── SlideNews ─────────────────────────────────────────────────────────
+  function SlideNews({ d }) {
+    const n = d.news;
+    const ref = useSlideAnim((el) => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+      const paths = el.querySelectorAll('.gc-curve path');
+      paths.forEach(p => { try { const len = p.getTotalLength(); gsap.set(p, { strokeDasharray: len, strokeDashoffset: len }); } catch(e){} });
+      tl.to(paths, { strokeDashoffset: 0, duration: 1.2, ease: 'power2.inOut', stagger: 0.12 }, 0);
+      tl.fromTo('.news-header-row', { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1);
+      tl.fromTo('.news-eyebrow', { x: -16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }, 0.3);
+      tl.fromTo('.news-headline', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: 'power3.out' }, 0.45);
+      tl.fromTo('.news-body', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.75);
+      tl.fromTo('.news-right-panel', { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.5);
+      tl.fromTo('.news-streak-cell', { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(1.4)', stagger: 0.04 }, 0.7);
+    });
+
+    const alertColors = {
+      advisory: { bg: PAL.dark, accent: PAL.light, label: 'ADVISORY' },
+      action:   { bg: '#7c2d00', accent: PAL.orange, label: 'ACTION REQUIRED' },
+      urgent:   { bg: '#7f1d1d', accent: '#ff4444', label: 'URGENT' },
+    };
+    const ac = alertColors[n.alertLevel] || alertColors.advisory;
+
+    const Header = () => (
+      <div className="news-header-row">
+        <SlideHeader num="02" label="News"
+          right={n.badge}
+          rightColor={n.style === 'alert' ? ac.accent : PAL.orange}
+          dark={n.style === 'alert' || n.style === 'quote'} />
+      </div>
+    );
+
+    if (n.style === 'award') return (
+      <section className="slide" style={{ background: PAL.warmGrey }} ref={ref}>
+        <GCFlow corner="tr" tone="light" scale={1.4} opacity={0.65} />
+        <GCFlow corner="bl" tone="mid" scale={1.0} opacity={0.4} />
+        <Header />
+        <div style={{ position: 'absolute', top: 180, left: 80, right: 80, display: 'grid', gridTemplateColumns: '1fr 700px', gap: 80, alignItems: 'start' }}>
+          <div>
+            <div className="news-eyebrow t-eyebrow" style={{ fontSize: 18, color: PAL.mid }}>{n.eyebrow}</div>
+            <h2 className="news-headline t-display" style={{ fontSize: 150, color: PAL.dark, margin: '16px 0 0', lineHeight: 0.92 }}>
+              {n.line1}<br/>{n.line2}<br/><span style={{ color: PAL.mid }}>{n.line3}</span>
+            </h2>
+            <p className="news-body t-body" style={{ fontSize: 24, color: PAL.dark, opacity: 0.85, marginTop: 28, lineHeight: 1.45 }}>{n.body}</p>
+          </div>
+          <div className="news-right-panel" style={{ background: PAL.dark, padding: 44, color: '#fff' }}>
+            <div className="t-mono" style={{ fontSize: 12, color: PAL.light, letterSpacing: '0.22em' }}>THE STREAK</div>
+            <div style={{ marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 9 }}>
+              {Array.from({ length: n.streak }).map((_, i) => (
+                <div key={i} className="news-streak-cell" style={{ background: PAL.light, padding: '11px 0', textAlign: 'center' }}>
+                  <div className="t-display" style={{ fontSize: 19, color: PAL.dark }}>'{String(n.startYear + i).slice(-2)}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ borderTop: `1px solid ${PAL.light}44`, marginTop: 24, paddingTop: 20, display: 'flex', justifyContent: 'space-between' }}>
+              <div>
+                <div className="t-mono" style={{ fontSize: 11, color: PAL.light, letterSpacing: '0.2em' }}>QUALIFYING</div>
+                <div className="t-display" style={{ fontSize: 19, marginTop: 4 }}>{n.period}</div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div className="t-mono" style={{ fontSize: 11, color: PAL.light, letterSpacing: '0.2em' }}>YEARS</div>
+                <div className="t-display" style={{ fontSize: 19, marginTop: 4, color: PAL.light }}>{n.streak}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+    if (n.style === 'stat') return (
+      <section className="slide" style={{ background: PAL.warmGrey }} ref={ref}>
+        <GCFlow corner="tr" tone="light" scale={1.6} opacity={0.5} />
+        <GCFlow corner="bl" tone="mid" scale={1.1} opacity={0.35} />
+        <Header />
+        <div style={{ position: 'absolute', top: 180, left: 80, right: 80 }}>
+          <div className="news-eyebrow t-eyebrow" style={{ fontSize: 18, color: PAL.mid }}>{n.eyebrow}</div>
+          <div className="news-headline" style={{ marginTop: 32, display: 'flex', alignItems: 'flex-end', gap: 32 }}>
+            <div className="t-display" style={{ fontSize: 320, color: PAL.dark, lineHeight: 0.85, letterSpacing: '-0.03em' }}>{n.statNumber}</div>
+            <div style={{ paddingBottom: 28 }}>
+              <div className="t-display" style={{ fontSize: 64, color: PAL.mid, lineHeight: 1.1 }}>{n.statUnit}</div>
+              {n.statSecondary && <div className="t-body" style={{ fontSize: 26, color: PAL.dark, opacity: 0.65, marginTop: 12 }}>{n.statSecondary}</div>}
+            </div>
+          </div>
+          <p className="news-body t-body" style={{ fontSize: 24, color: PAL.dark, opacity: 0.8, marginTop: 36, maxWidth: 1200, lineHeight: 1.45 }}>{n.body}</p>
+        </div>
+      </section>
+    );
+
+    if (n.style === 'quote') return (
+      <section className="slide dark" style={{ background: PAL.dark }} ref={ref}>
+        <GCFlow corner="tr" tone="light" scale={1.5} opacity={0.45} />
+        <GCFlow corner="bl" tone="mid" scale={1.0} opacity={0.3} />
+        <Header />
+        <div style={{ position: 'absolute', top: 180, left: 80, right: 80 }}>
+          <div className="news-eyebrow t-eyebrow" style={{ fontSize: 18, color: PAL.light }}>{n.eyebrow}</div>
+          <div className="news-headline" style={{ marginTop: 36, paddingLeft: 48, borderLeft: `6px solid ${PAL.light}` }}>
+            <div className="t-display" style={{ fontSize: 72, color: '#fff', lineHeight: 1.12, maxWidth: 1600 }}>"{n.quoteText}"</div>
+          </div>
+          <div className="news-body" style={{ marginTop: 52, paddingLeft: 48, display: 'flex', alignItems: 'center', gap: 24 }}>
+            <div style={{ width: 48, height: 2, background: PAL.light }} />
+            <div>
+              <div className="t-display" style={{ fontSize: 28, color: PAL.light }}>{n.quoteAttrib}</div>
+              {n.quoteContext && <div className="t-body" style={{ fontSize: 20, color: '#fff', opacity: 0.6, marginTop: 6 }}>{n.quoteContext}</div>}
+            </div>
+          </div>
+          <DarkLogoStamp />
+          {n.body && <p className="t-body" style={{ fontSize: 22, color: '#fff', opacity: 0.7, marginTop: 48, maxWidth: 1200, lineHeight: 1.45 }}>{n.body}</p>}
+        </div>
+      </section>
+    );
+
+    if (n.style === 'milestone') return (
+      <section className="slide" style={{ background: PAL.warmGrey }} ref={ref}>
+        <GCFlow corner="tr" tone="light" scale={1.4} opacity={0.6} />
+        <Header />
+        <div style={{ position: 'absolute', top: 180, left: 80, right: 80 }}>
+          <div className="news-eyebrow t-eyebrow" style={{ fontSize: 18, color: PAL.mid }}>{n.eyebrow}</div>
+          <h2 className="news-headline t-display" style={{ fontSize: 100, color: PAL.dark, margin: '16px 0 0', lineHeight: 0.95 }}>{n.milestoneHead}</h2>
+          <p className="news-body t-body" style={{ fontSize: 22, color: PAL.dark, opacity: 0.75, marginTop: 20, maxWidth: 900, lineHeight: 1.45 }}>{n.body}</p>
+          <div style={{ marginTop: 52, display: 'flex', alignItems: 'stretch', gap: 0 }}>
+            {n.milestoneSteps.map((step, i) => {
+              const isCurrent = step.includes(n.milestoneCurrent) && n.milestoneCurrent;
+              const isDone = !isCurrent && i < n.milestoneSteps.findIndex(s => s.includes(n.milestoneCurrent));
+              return (
+                <div key={i} className="news-streak-cell" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ height: 6, background: isDone ? PAL.mid : isCurrent ? PAL.light : `${PAL.dark}30`, marginRight: 4 }} />
+                  <div style={{ marginTop: 16, marginRight: 4, padding: '20px 22px', background: isCurrent ? PAL.dark : '#fff', borderTop: `3px solid ${isCurrent ? PAL.light : isDone ? PAL.mid : `${PAL.dark}20`}`, flex: 1 }}>
+                    <div className="t-mono" style={{ fontSize: 11, letterSpacing: '0.18em', color: isCurrent ? PAL.light : isDone ? PAL.mid : `${PAL.dark}60`, marginBottom: 8 }}>
+                      {isCurrent ? '▶ CURRENT' : isDone ? '✓ DONE' : 'UPCOMING'}
+                    </div>
+                    <div className="t-body" style={{ fontSize: 17, color: isCurrent ? '#fff' : PAL.dark, lineHeight: 1.35 }}>{step}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    );
+
+    if (n.style === 'alert') return (
+      <section className="slide" style={{ background: ac.bg }} ref={ref}>
+        <GCFlow corner="tr" tone="light" scale={1.4} opacity={0.25} />
+        <Header />
+        <div style={{ position: 'absolute', top: 180, left: 80, right: 80 }}>
+          <div className="news-eyebrow" style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 28 }}>
+            <div className="t-mono" style={{ background: ac.accent, color: ac.bg === PAL.dark ? PAL.dark : '#fff', fontSize: 13, fontWeight: 700, letterSpacing: '0.2em', padding: '8px 20px' }}>{ac.label}</div>
+            <div className="t-eyebrow" style={{ fontSize: 16, color: ac.accent }}>{n.eyebrow}</div>
+          </div>
+          <h2 className="news-headline t-display" style={{ fontSize: 100, color: '#fff', lineHeight: 0.95, maxWidth: 1600 }}>{n.alertHead}</h2>
+          <p className="news-body t-body" style={{ fontSize: 26, color: '#fff', opacity: 0.85, marginTop: 32, maxWidth: 1300, lineHeight: 1.45 }}>{n.body}</p>
+          <div style={{ marginTop: 56, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <DarkLogoStamp />
+            <div className="news-streak-cell" style={{ background: `${ac.accent}18`, border: `1px solid ${ac.accent}44`, padding: 32 }}>
+              <div className="t-mono" style={{ fontSize: 12, color: ac.accent, letterSpacing: '0.2em', marginBottom: 12 }}>ACTION REQUIRED</div>
+              <p className="t-body" style={{ fontSize: 22, color: '#fff', lineHeight: 1.45 }}>{n.alertAction}</p>
+            </div>
+            <div className="news-streak-cell" style={{ background: `${ac.accent}18`, border: `1px solid ${ac.accent}44`, padding: 32 }}>
+              <div className="t-mono" style={{ fontSize: 12, color: ac.accent, letterSpacing: '0.2em', marginBottom: 12 }}>OWNER / CONTACT</div>
+              <p className="t-display" style={{ fontSize: 28, color: '#fff' }}>{n.alertOwner}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+    return null;
+  }
+
+  // ── SlideRisk ─────────────────────────────────────────────────────────
+  function SlideRisk({ d }) {
+    const ref = useSlideAnim((el) => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+      const paths = el.querySelectorAll('.gc-curve path');
+      paths.forEach(p => { try { const len = p.getTotalLength(); gsap.set(p, { strokeDasharray: len, strokeDashoffset: len }); } catch(e){} });
+      tl.to(paths, { strokeDashoffset: 0, duration: 1.2, ease: 'power2.inOut', stagger: 0.12 }, 0);
+      const riskHdr = el.querySelector('.risk-header'); if(riskHdr) tl.fromTo(riskHdr, { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.1);
+      const riskHl = el.querySelector('.risk-headline'); if(riskHl) tl.fromTo(riskHl, { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.2);
+      // Donut spins in
+      const riskDonut = el.querySelector('.risk-donut'); if(riskDonut) tl.fromTo(riskDonut, { rotation: -90, opacity: 0, transformOrigin: '50% 50%' }, { rotation: 0, opacity: 1, duration: 0.9, ease: 'power2.out' }, 0.4);
+      const riskDL = el.querySelector('.risk-donut-label'); if(riskDL) tl.fromTo(riskDL, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.9);
+      const riskLeg = el.querySelectorAll('.risk-legend-item'); if(riskLeg.length) tl.fromTo(riskLeg, { x: -16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, stagger: 0.07 }, 0.85);
+      // Client bars grow from left
+      const riskBars = el.querySelectorAll('.risk-client-bar-fill'); if(riskBars.length) tl.fromTo(riskBars, { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 0.7, ease: 'power2.out', stagger: 0.09 }, 0.6);
+      const riskRows = el.querySelectorAll('.risk-client-row'); if(riskRows.length) tl.fromTo(riskRows, { x: 20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, stagger: 0.07 }, 0.55);
+      const riskNote = el.querySelector('.risk-note'); if(riskNote) tl.fromTo(riskNote, { opacity: 0 }, { opacity: 0.7, duration: 0.5 }, 1.1);
+    });
+
+    const hazardMix = d.hazardMix;
+    const clients = d.clients;
+    const total = hazardMix.reduce((a, h) => a + h.value, 0);
+    const max = Math.max(...clients.map(c => c.value));
+    let cum = 0;
+    const segs = hazardMix.map((h, i) => {
+      const start = cum; cum += h.value; const end = cum;
+      return { ...h, start, end, color: [PAL.mid, PAL.light, PAL.orange, PAL.dark][i] };
+    });
+    const r = 200, cx = 220, cy = 220, c = 2 * Math.PI * r;
+
+    return (
+      <section className="slide dark" ref={ref}>
+        <GCFlow corner="br" tone="light" scale={1.0} opacity={0.35} />
+        <div className="risk-header"><SlideHeader num="03" label="Concentration" right="SOURCE · POWER BI" dark={true} /></div>
+        <h2 className="risk-headline t-display" style={{ position: 'absolute', top: 152, left: 80, right: 80, fontSize: 84, margin: 0 }}>Where the risk lives.</h2>
+
+        <div style={{ position: 'absolute', top: 310, left: 80, width: 880 }}>
+          <svg className="risk-donut" width="440" height="440" viewBox="0 0 440 440" aria-hidden>
+            {segs.map((s, i) => {
+              const dash = (s.end - s.start) / total * c;
+              const offset = c - (s.start / total * c);
+              return <circle key={i} cx={cx} cy={cy} r={r} fill="none" stroke={s.color} strokeWidth="54"
+                strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={offset} transform={`rotate(-90 ${cx} ${cy})`} />;
+            })}
+            <text x={cx} y={cy - 4} textAnchor="middle" fill="#fff" fontFamily="Quicksand,system-ui" fontSize="80" fontWeight="700">{total}</text>
+            <text className="risk-donut-label" x={cx} y={cy + 34} textAnchor="middle" fill={PAL.light} fontFamily="monospace" fontSize="13" letterSpacing="3">HAZARD MIX</text>
+          </svg>
+          <div style={{ marginTop: 24, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 24px' }}>
+            {segs.map(s => (
+              <div key={s.label} className="risk-legend-item" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ width: 14, height: 14, background: s.color, flexShrink: 0 }} />
+                <span className="t-body" style={{ fontSize: 19, color: '#fff' }}>{s.label}</span>
+                <span className="t-mono" style={{ fontSize: 17, color: PAL.light, marginLeft: 'auto' }}>{s.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ position: 'absolute', top: 310, right: 80, width: 900 }}>
+          <div className="t-mono" style={{ fontSize: 15, color: PAL.light, letterSpacing: '0.2em' }}>TOP CLIENTS · HAZARD COUNT</div>
+          <div style={{ marginTop: 26, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {clients.map(client => {
+              const pct = (client.value / max) * 100;
+              return (
+                <div key={client.name} className="risk-client-row" style={{ display: 'grid', gridTemplateColumns: '230px 1fr 64px', alignItems: 'center', gap: 22 }}>
+                  <span className="t-display" style={{ fontSize: 27 }}>{client.name}</span>
+                  <div style={{ height: 22, background: `${PAL.light}20` }}>
+                    <div className="risk-client-bar-fill" style={{ width: `${pct}%`, height: '100%', background: PAL.light }} />
+                  </div>
+                  <span className="t-display" style={{ fontSize: 27, textAlign: 'right', color: PAL.light }}>{client.value}</span>
+                </div>
+              );
+            })}
+          </div>
+          <DarkLogoStamp />
+        <p className="risk-note t-body" style={{ fontSize: 21, marginTop: 32, maxWidth: 860, lineHeight: 1.45 }}>
+            Volume tracks contract size. Tree, surface and perimeter hazards are being observed regularly by GC teams.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+
+  // ── SlideIncident — kept intact, add anim wrapper ────────────────────
+
+  function SlideIncident({ d }) {
+    const ref = useSlideAnim((el) => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+      tl.fromTo(el.querySelector('.slide-header-row'), { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0);
+      tl.fromTo(el.querySelector('h2'), { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: 'power3.out' }, 0.15);
+      tl.fromTo(el.querySelectorAll('.inc-stat-box'), { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.08 }, 0.35);
+      tl.fromTo(el.querySelector('.inc-card'), { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.45);
+      tl.fromTo(el.querySelector('.inc-context'), { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.7);
+    });
+    const harmCount = d.stats.harmIncidents;
+    const incidents = d.incidents || [];
+
+    // Top hazard category — auto-derive from hazardMix
+    const topHazard = [...d.hazardMix].sort((a, b) => b.value - a.value)[0] || { label: "Hazards", value: 0 };
+    const topHazardNearMiss = d.stats.nearMisses;
+    const hazardContext = d.hazardContext ||
+      `Most ${topHazard.label.toLowerCase()} reports are environmental rather than behavioural. Teams are identifying and reporting them consistently.`;
+
+    // Severity colour
+    const sevColor = (sev) => {
+      if (!sev) return PAL.light;
+      if (sev.includes('Major') || sev.includes('High')) return '#ff4444';
+      if (sev.includes('Moderate') || sev.includes('Medium')) return PAL.orange;
+      return PAL.light;
+    };
+
+    const headerRight = harmCount === 0 ? 'CLEAN WEEK'
+      : `${harmCount} HARM EVENT${harmCount > 1 ? 'S' : ''}`;
+    const headerRightColor = harmCount === 0 ? PAL.mid
+      : harmCount >= 4 ? '#ff4444' : PAL.orange;
+
+    // Shared top hazard signal panel
+    const TopHazardPanel = ({ compact = false }) => (
+      <div>
+        <div className="t-mono" style={{ fontSize: 14, color: PAL.dark, letterSpacing: "0.22em" }}>
+          TOP HAZARD SIGNAL · {d.periodShort.toUpperCase()}
+        </div>
+        <div style={{ marginTop: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="inc-stat-box" style={{ background: PAL.warmGrey, padding: compact ? 24 : 32 }}>
+            <div className="t-mono" style={{ fontSize: 12, color: PAL.dark, letterSpacing: "0.16em", opacity: 0.7 }}>
+              {topHazard.label.toUpperCase()}
+            </div>
+            <div className="t-display" style={{ fontSize: compact ? 90 : 120, color: PAL.dark, lineHeight: 0.9, marginTop: 6 }}>
+              {topHazard.value}
+            </div>
+          </div>
+          <div className="inc-stat-box" style={{ background: PAL.warmGrey, padding: compact ? 24 : 32 }}>
+            <div className="t-mono" style={{ fontSize: 12, color: PAL.dark, letterSpacing: "0.16em", opacity: 0.7 }}>
+              NEAR MISSES
+            </div>
+            <div className="t-display" style={{ fontSize: compact ? 90 : 120, color: PAL.mid, lineHeight: 0.9, marginTop: 6 }}>
+              {topHazardNearMiss}
+            </div>
+          </div>
+        </div>
+        <p className="inc-context t-body" style={{ fontSize: 19, color: PAL.dark, opacity: 0.78, marginTop: 22, lineHeight: 1.45 }}>
+          {hazardContext}
+        </p>
+      </div>
+    );
+
+    // Single incident card (featured)
+    const IncidentCard = ({ inc, num, compact = false }) => (
+      <div className="inc-card" style={{ background: PAL.dark, color: "#fff", padding: compact ? 32 : 50, height: "100%",
+        display: "flex", flexDirection: "column" }}>
+        <div className="t-mono" style={{ fontSize: 12, color: PAL.light, letterSpacing: "0.22em" }}>
+          HARM-INCIDENT · {String(num).padStart(2,'0')}
+        </div>
+        <div className="t-display" style={{ fontSize: compact ? 20 : 26, color: sevColor(inc.severity), marginTop: 12, lineHeight: 1.2 }}>
+          {inc.severity}
+        </div>
+        {inc.type && (
+          <div className="t-mono" style={{ fontSize: 11, color: `${PAL.light}88`, letterSpacing: "0.16em", marginTop: 6 }}>
+            {inc.type.toUpperCase()}{inc.bu ? ` · ${inc.bu.toUpperCase()}` : ''}
+          </div>
+        )}
+        <p className="t-body" style={{ fontSize: compact ? 18 : 23, lineHeight: 1.45, marginTop: 16, flex: 1 }}>
+          {inc.summary}
+        </p>
+        <div style={{ borderTop: `1px solid ${PAL.light}33`, marginTop: 20, paddingTop: 16 }}>
+          <div className="t-mono" style={{ fontSize: 11, color: PAL.light, letterSpacing: "0.2em" }}>WHAT WE'RE DOING</div>
+          <p className="t-body" style={{ fontSize: compact ? 15 : 19, lineHeight: 1.4, marginTop: 8, opacity: 0.88 }}>
+            {inc.learning}
+          </p>
+        </div>
+        <div style={{ borderTop: `1px solid ${PAL.light}22`, marginTop: 16, paddingTop: 12,
+          display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+          <span className="t-mono" style={{ fontSize: 11, color: PAL.light, letterSpacing: "0.18em" }}>
+            {inc.status.toUpperCase()}
+          </span>
+          <div style={{ display: "flex", gap: 16 }}>
+            {inc.riddor && <span className="t-mono" style={{ fontSize: 11, color: PAL.orange, letterSpacing: "0.18em" }}>RIDDOR</span>}
+            {inc.lti && <span className="t-mono" style={{ fontSize: 11, color: PAL.orange, letterSpacing: "0.18em" }}>LTI</span>}
+            {!inc.riddor && !inc.lti && (
+              <span className="t-mono" style={{ fontSize: 11, color: PAL.mid, letterSpacing: "0.18em" }}>NO RIDDOR · NO LTI</span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+
+    // Compact incident row (for 2–3 layout secondary incidents)
+    const IncidentRow = ({ inc, num }) => (
+      <div style={{ background: PAL.dark, color: "#fff", padding: "18px 24px",
+        borderLeft: `4px solid ${sevColor(inc.severity)}`, display: "flex", gap: 24, alignItems: "flex-start" }}>
+        <div style={{ flexShrink: 0 }}>
+          <div className="t-mono" style={{ fontSize: 10, color: PAL.light, letterSpacing: "0.18em" }}>INC {String(num).padStart(2,'0')}</div>
+          <div className="t-display" style={{ fontSize: 16, color: sevColor(inc.severity), marginTop: 4, lineHeight: 1.1 }}>{inc.severity}</div>
+          {inc.type && <div className="t-mono" style={{ fontSize: 10, color: `${PAL.light}70`, marginTop: 4, letterSpacing: "0.12em" }}>{inc.type}</div>}
+        </div>
+        <div style={{ flex: 1 }}>
+          <p className="t-body" style={{ fontSize: 16, lineHeight: 1.4, opacity: 0.9 }}>{inc.summary}</p>
+          {inc.learning && <p className="t-body" style={{ fontSize: 14, lineHeight: 1.35, opacity: 0.65, marginTop: 6 }}>Action: {inc.learning}</p>}
+        </div>
+        <div className="t-mono" style={{ fontSize: 10, color: inc.riddor || inc.lti ? PAL.orange : PAL.mid,
+          letterSpacing: "0.14em", flexShrink: 0, textAlign: "right" }}>
+          {inc.riddor ? 'RIDDOR' : inc.lti ? 'LTI' : 'No threshold'}<br/>
+          <span style={{ color: `${PAL.light}60` }}>{inc.status}</span>
+        </div>
+      </div>
+    );
+
+
+    // ── LAYOUT: ZERO harm incidents ──────────────────────────────────────
+    if (harmCount === 0) {
+      return (
+        <section className="slide" style={{ background: PAL.paper }}>
+          <SlideHeader num="04" label="Incident Desk" right="CLEAN WEEK" rightColor={PAL.mid} dark={false} />
+          <h2 className="t-display" style={{ position: "absolute", top: 150, left: 80, right: 80,
+            fontSize: 88, color: PAL.dark, margin: 0 }}>
+            No harm events. The hazard signal holds.
+          </h2>
+          <div style={{ position: "absolute", top: 340, left: 80, width: 820 }}>
+            <TopHazardPanel />
+          </div>
+          <div style={{ position: "absolute", top: 340, right: 80, width: 860,
+            background: PAL.dark, color: "#fff", padding: 56 }}>
+            <div className="t-mono" style={{ fontSize: 12, color: PAL.light, letterSpacing: "0.22em" }}>HARM-INCIDENTS THIS WEEK</div>
+            <div className="t-display" style={{ fontSize: 280, color: PAL.light, lineHeight: 0.85, marginTop: 20 }}>0</div>
+            <div style={{ borderTop: `1px solid ${PAL.light}33`, marginTop: 32, paddingTop: 24,
+              display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+              {[["RIDDOR", d.stats.riddor, PAL.mid], ["LTI", d.stats.lostTime, PAL.mid], ["RATIO", d.stats.ratio, PAL.light]].map(([lbl, val, col]) => (
+                <div key={lbl}>
+                  <div className="t-mono" style={{ fontSize: 11, color: PAL.light, letterSpacing: "0.18em", opacity: 0.7 }}>{lbl}</div>
+                  <div className="t-display" style={{ fontSize: 40, color: col, marginTop: 6 }}>{val}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // ── LAYOUT: ONE incident ─────────────────────────────────────────────
+    if (harmCount === 1) {
+      return (
+        <section className="slide" style={{ background: PAL.paper }}>
+          <SlideHeader num="04" label="Incident Desk" right={headerRight} rightColor={headerRightColor} dark={false} />
+          <h2 className="t-display" style={{ position: "absolute", top: 150, left: 80, right: 80,
+            fontSize: 82, color: PAL.dark, margin: 0, lineHeight: 1.0 }}>
+            {topHazard.label} — and the moment we learned from.
+          </h2>
+          <div style={{ position: "absolute", top: 348, left: 80, width: 820 }}>
+            <TopHazardPanel />
+          </div>
+          <div style={{ position: "absolute", top: 348, right: 80, width: 880, bottom: 80 }}>
+            <IncidentCard inc={incidents[0]} num={1} />
+          </div>
+        </section>
+      );
+    }
+
+    // ── LAYOUT: TWO or THREE incidents ───────────────────────────────────
+    if (harmCount >= 2 && harmCount <= 3) {
+      const featured = incidents[0];
+      const secondary = incidents.slice(1);
+      return (
+        <section className="slide" style={{ background: PAL.paper }}>
+          <SlideHeader num="04" label="Incident Desk" right={headerRight} rightColor={headerRightColor} dark={false} />
+          <h2 className="t-display" style={{ position: "absolute", top: 150, left: 80, right: 80,
+            fontSize: 76, color: PAL.dark, margin: 0, lineHeight: 1.0 }}>
+            {harmCount} harm events. Highest severity featured.
+          </h2>
+          {/* Top hazard strip */}
+          <div style={{ position: "absolute", top: 318, left: 80, right: 80 }}>
+            <TopHazardPanel compact={true} />
+          </div>
+          {/* Featured incident */}
+          <div style={{ position: "absolute", top: 560, left: 80, width: 860, bottom: 80 }}>
+            <IncidentCard inc={featured} num={1} compact={true} />
+          </div>
+          {/* Secondary incidents stacked */}
+          <div style={{ position: "absolute", top: 560, right: 80, width: 860, bottom: 80,
+            display: "flex", flexDirection: "column", gap: 12 }}>
+            {secondary.map((inc, i) => (
+              <IncidentRow key={i} inc={inc} num={i + 2} />
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    // ── LAYOUT: FOUR OR MORE incidents ───────────────────────────────────
+    const featured = incidents[0];
+    const severityCounts = incidents.reduce((acc, inc) => {
+      const key = inc.severity.includes('Major') || inc.severity.includes('High') ? 'High'
+        : inc.severity.includes('Moderate') || inc.severity.includes('Medium') ? 'Medium' : 'Low';
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+
+    return (
+      <section className="slide" style={{ background: PAL.paper }} ref={ref}>
+        <div className="slide-header-row"><SlideHeader num="04" label="Incident Desk" right={headerRight} rightColor={headerRightColor} dark={false} /></div>
+        <h2 className="t-display" style={{ position: "absolute", top: 150, left: 80, right: 80,
+          fontSize: 76, color: PAL.dark, margin: 0 }}>
+          {harmCount} harm events this week. Full detail in tracker.
+        </h2>
+        {/* Severity summary bar */}
+        <div style={{ position: "absolute", top: 318, left: 80, right: 80,
+          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+          {[
+            ["TOTAL HARM", harmCount, PAL.orange],
+            ["HIGH SEVERITY", severityCounts.High || 0, '#ff4444'],
+            ["MEDIUM SEVERITY", severityCounts.Medium || 0, PAL.orange],
+            ["LOW SEVERITY", severityCounts.Low || 0, PAL.light],
+          ].map(([lbl, val, col]) => (
+            <div key={lbl} style={{ background: PAL.warmGrey, padding: "22px 26px" }}>
+              <div className="t-mono" style={{ fontSize: 11, color: PAL.dark, letterSpacing: "0.16em", opacity: 0.6 }}>{lbl}</div>
+              <div className="t-display" style={{ fontSize: 72, color: col, marginTop: 6 }}>{val}</div>
+            </div>
+          ))}
+        </div>
+        {/* Featured — highest severity */}
+        <div style={{ position: "absolute", top: 490, left: 80, width: 740, bottom: 80 }}>
+          <div className="t-mono" style={{ fontSize: 12, color: PAL.dark, opacity: 0.5, letterSpacing: "0.18em", marginBottom: 10 }}>
+            HIGHEST SEVERITY — FEATURED
+          </div>
+          <IncidentCard inc={featured} num={1} compact={true} />
+        </div>
+        {/* Remaining as rows */}
+        <div style={{ position: "absolute", top: 490, left: 840, right: 80, bottom: 80,
+          display: "flex", flexDirection: "column", gap: 10, overflowY: "hidden" }}>
+          <div className="t-mono" style={{ fontSize: 12, color: PAL.dark, opacity: 0.5, letterSpacing: "0.18em", marginBottom: 2 }}>
+            REMAINING INCIDENTS
+          </div>
+          {incidents.slice(1, 5).map((inc, i) => (
+            <IncidentRow key={i} inc={inc} num={i + 2} />
+          ))}
+          {harmCount > 5 && (
+            <div className="t-mono" style={{ fontSize: 12, color: PAL.dark, opacity: 0.45, letterSpacing: "0.16em", padding: "10px 0" }}>
+              +{harmCount - 5} further incidents — see SafetyCulture / Power BI for full detail
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Mock SharePoint data ──────────────────────────────────────────────────
+  // In production these objects are fetched via Microsoft Graph API calls to
+  // gcontrol365.sharepoint.com/sites/HSQE lists: Certificates, Action List,
+  // Nonconformity List, Audit List, Memberships List.
+  // List names confirmed from SharePoint site navigation 01/05/26.
+  function getSPMock() {
+    const gv = (id, def) => { const el = document.getElementById(id); return el ? (el.value || def) : def; };
+    const gn2 = (id, def) => parseInt(gv(id, def)) || def;
+    return {
+      certExpiring: [0,1,2,3].map(i => ({
+        name:     gv('sp-cert-'+i+'-name',   ["CLOCS Champion Membership","RISQS Audit — SAS","NIC EIC EV Certification","Constructionline Platinum"][i]),
+        expiry:   gv('sp-cert-'+i+'-expiry', ["01/04/26","05/06/26","06/01/25","08/08/26"][i]),
+        daysLeft: gn2('sp-cert-'+i+'-days',  [-30,35,0,99][i]),
+        status:   gv('sp-cert-'+i+'-status', ["Expired","Current","Pending","Current"][i]),
+      })).filter(c => c.name),
+      actions: {
+        total:         gn2('sp-act-total',    379),
+        overdue:       gn2('sp-act-overdue',  18),
+        closedThisWeek:gn2('sp-act-closed',   13),
+      },
+      nonconformities: {
+        open:          gn2('sp-ncr-open',     12),
+        overdueClose:  gn2('sp-ncr-overdue',  2),
+        raisedThisWeek:gn2('sp-ncr-raised',   3),
+      },
+      audits: {
+        scheduledThisMonth:  gn2('sp-aud-sched',    4),
+        completedThisMonth:  gn2('sp-aud-complete',  3),
+        overdueActions:      gn2('sp-aud-overdue',   6),
+      },
+      memberships: {
+        total:       gn2('sp-mem-total',   94),
+        expiringSoon:gn2('sp-mem-expiring', 3),
+      },
+    };
+  }
+  const SP_MOCK = getSPMock();
+
+  function CertChip({ daysLeft, status }) {
+    let bg, label;
+    if (status === "Expired" || daysLeft < 0) { bg = "#C0392B"; label = "EXPIRED"; }
+    else if (status === "Pending")            { bg = PAL.orange; label = "PENDING"; }
+    else if (daysLeft <= 30)                  { bg = PAL.orange; label: `${daysLeft}D`; label = `${daysLeft}D`; }
+    else if (daysLeft <= 90)                  { bg = "#c8a000"; label = `${daysLeft}D`; }
+    else                                      { bg = PAL.mid;   label = "CURRENT"; }
+    return (
+      <span className="t-mono" style={{
+        background: bg, color: "#fff", fontSize: 11, fontWeight: 700,
+        letterSpacing: "0.12em", padding: "3px 9px", borderRadius: 2, flexShrink: 0,
+      }}>{label}</span>
+    );
+  }
+
+  function SlideQuality({ d }) {
+    const ref = useSlideAnim((el) => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+      const qualHdr = el.querySelectorAll('.qual-header'); if(qualHdr.length) tl.fromTo(qualHdr, { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0);
+      const qualHl = el.querySelector('.qual-headline'); if(qualHl) tl.fromTo(qualHl, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, 0.15);
+      const qualLive = el.querySelectorAll('.qual-live-card'); if(qualLive.length) tl.fromTo(qualLive, { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out', stagger: 0.1 }, 0.35);
+      const qualMan = el.querySelectorAll('.qual-manual-card'); if(qualMan.length) tl.fromTo(qualMan, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out', stagger: 0.07 }, 0.6);
+      const qualBadge = el.querySelector('.qual-badge'); if(qualBadge) tl.fromTo(qualBadge, { x: 16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, 0.2);
+    });
+    const sp = typeof getSPMock === "function" ? getSPMock() : SP_MOCK;
+
+    // Left column: live data cards from SharePoint
+    const liveCards = [
+      {
+        source: "Certificates · Action List",
+        label: "ACCREDITATIONS",
+        accent: sp.certExpiring.some(c => c.daysLeft < 0 || c.status === "Pending") ? PAL.orange : PAL.mid,
+        content: (
+          <div>
+            <div className="t-display" style={{ fontSize: 52, color: PAL.dark, lineHeight: 1 }}>
+              {sp.memberships.total}
+              <span className="t-body" style={{ fontSize: 18, opacity: 0.55, marginLeft: 10 }}>total held</span>
+            </div>
+            <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+              {sp.certExpiring.map((c, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                  <span className="t-body" style={{ fontSize: 14, color: PAL.dark, opacity: 0.85, flex: 1, lineHeight: 1.25 }}>{c.name}</span>
+                  <CertChip daysLeft={c.daysLeft} status={c.status} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ),
+      },
+      {
+        source: "Action List",
+        label: "ACTIONS",
+        accent: sp.actions.overdue > 10 ? PAL.orange : PAL.mid,
+        content: (
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 14 }}>
+              {[
+                ["OPEN",    sp.actions.total,          PAL.dark],
+                ["OVERDUE", sp.actions.overdue,        sp.actions.overdue > 10 ? PAL.orange : PAL.dark],
+                ["CLOSED ↑WK", sp.actions.closedThisWeek, PAL.mid],
+              ].map(([lbl, val, col]) => (
+                <div key={lbl} style={{ background: PAL.warmGrey, padding: "10px 12px" }}>
+                  <div className="t-mono" style={{ fontSize: 10, letterSpacing: "0.16em", color: PAL.dark, opacity: 0.6 }}>{lbl}</div>
+                  <div className="t-display" style={{ fontSize: 38, color: col, marginTop: 2 }}>{val}</div>
+                </div>
+              ))}
+            </div>
+            <p className="t-body" style={{ fontSize: 14, color: PAL.dark, opacity: 0.7, lineHeight: 1.4 }}>
+              {sp.actions.overdue} overdue actions require owner escalation. {sp.actions.closedThisWeek} closed in the last 7 days.
+            </p>
+          </div>
+        ),
+      },
+      {
+        source: "Nonconformity List · Audit List",
+        label: "AUDIT & NCRs",
+        accent: sp.nonconformities.overdueClose > 0 ? PAL.orange : PAL.mid,
+        content: (
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+              {[
+                ["OPEN NCRs",       sp.nonconformities.open,           PAL.dark],
+                ["OVERDUE CLOSE",   sp.nonconformities.overdueClose,   sp.nonconformities.overdueClose > 0 ? PAL.orange : PAL.dark],
+                ["AUDITS THIS MTH", sp.audits.completedThisMonth + "/" + sp.audits.scheduledThisMonth, PAL.dark],
+                ["AUDIT ACTIONS OD",sp.audits.overdueActions,          sp.audits.overdueActions > 0 ? PAL.orange : PAL.dark],
+              ].map(([lbl, val, col]) => (
+                <div key={lbl} style={{ background: PAL.warmGrey, padding: "10px 12px" }}>
+                  <div className="t-mono" style={{ fontSize: 10, letterSpacing: "0.16em", color: PAL.dark, opacity: 0.6 }}>{lbl}</div>
+                  <div className="t-display" style={{ fontSize: 34, color: col, marginTop: 2 }}>{val}</div>
+                </div>
+              ))}
+            </div>
+            <p className="t-body" style={{ fontSize: 14, color: PAL.dark, opacity: 0.7, lineHeight: 1.4 }}>
+              {sp.nonconformities.raisedThisWeek} new NCRs raised this week. {sp.audits.completedThisMonth} of {sp.audits.scheduledThisMonth} scheduled audits completed this month.
+            </p>
+          </div>
+        ),
+      },
+    ];
+
+    return (
+      <section className="slide" style={{ background: PAL.warmGrey }} ref={ref}>
+        <div className="qual-header"><SlideHeader num="05" label="Quality & IMS" right="SYSTEMS DESK" dark={false} /></div>
+
+        <h2 className="qual-headline t-display" style={{ position: "absolute", top: 150, left: 80,
+          fontSize: 80, color: PAL.dark, margin: 0 }}>
+          The systems beneath the work.
+        </h2>
+
+        {/* SharePoint data badge */}
+        <div className="qual-badge" style={{ position: "absolute", top: 162, right: 80, display: "flex", alignItems: "center", gap: 8, background: PAL.dark, padding: "8px 16px" }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: PAL.light }} />
+          <span className="t-mono" style={{ fontSize: 11, color: PAL.light, letterSpacing: "0.18em" }}>
+            LIVE · SHAREPOINT
+          </span>
+        </div>
+
+        {/* Bottom label — mock notice */}
+        <div style={{ position: "absolute", top: 200, right: 80 }}>
+          <span className="t-mono" style={{ fontSize: 11, color: PAL.dark, opacity: 0.4, letterSpacing: "0.12em" }}>
+            MOCK DATA — GRAPH API PENDING LIST NAMES
+          </span>
+        </div>
+
+        {/* Live SharePoint data cards */}
+        <div style={{ position: "absolute", top: 298, left: 80, right: 80,
+          display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, height: 340 }}>
+          {liveCards.map((card, i) => (
+            <div key={i} className="qual-live-card" style={{ background: "#fff", padding: "22px 26px", height: "100%",
+              borderTop: `4px solid ${card.accent}`, display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                <div className="t-mono" style={{ fontSize: 11, letterSpacing: "0.2em", color: card.accent, textTransform: "uppercase" }}>
+                  {card.label}
+                </div>
+                <div className="t-mono" style={{ fontSize: 9, color: PAL.dark, opacity: 0.35, letterSpacing: "0.1em" }}>
+                  {card.source}
+                </div>
+              </div>
+              <div style={{ flex: 1 }}>{card.content}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Manual narrative cards — 6 dark green, tight below live cards */}
+        <div style={{ position: "absolute", top: 652, left: 80, right: 80,
+          display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 14 }}>
+          {d.ims.map((card, i) => (
+            <div key={i} className="qual-manual-card" style={{ background: PAL.dark, padding: "20px 20px",
+              borderTop: `3px solid ${PAL.light}` }}>
+              <div className="t-mono" style={{ fontSize: 10, letterSpacing: "0.18em", color: PAL.light,
+                textTransform: "uppercase", marginBottom: 10 }}>
+                {card.tag}
+              </div>
+              <div className="t-display" style={{ fontSize: 17, color: "#fff", lineHeight: 1.15, marginBottom: 8 }}>
+                {card.title}
+              </div>
+              <p className="t-body" style={{ fontSize: 13, color: "#fff", opacity: 0.72, lineHeight: 1.4 }}>
+                {card.body}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <SlideFooter d={d} />
+      </section>
+    );
+  }
+
+  function SlideEnvironment({ d }) {
+    const ref = useSlideAnim((el) => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+      const paths = el.querySelectorAll('.gc-curve path');
+      paths.forEach(p => { try { const len = p.getTotalLength(); gsap.set(p, { strokeDasharray: len, strokeDashoffset: len }); } catch(e){} });
+      tl.to(paths, { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut', stagger: 0.1 }, 0);
+      const envHeader = el.querySelector('.env-header');
+      if (envHeader) tl.fromTo(envHeader, { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.1);
+      const numEl = el.querySelector('.env-big-num');
+      if (numEl) {
+        const target = parseInt(numEl.dataset.val) || 0;
+        if (target === 0) {
+          tl.fromTo(numEl, { scale: 1.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'power3.out' }, 0.4);
+        } else {
+          const obj = { v: 0 };
+          tl.to(obj, { v: target, duration: 0.9, ease: 'power2.out', snap: { v: 1 },
+            onUpdate() { numEl.textContent = Math.round(obj.v); } }, 0.4);
+        }
+      }
+      const envWord = el.querySelector('.env-word');
+      const envNote = el.querySelector('.env-note');
+      if (envWord) tl.fromTo(envWord, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, 0.65);
+      if (envNote) tl.fromTo(envNote, { opacity: 0 }, { opacity: 0.82, duration: 0.5 }, 0.9);
+    });
+
+    return (
+      <section className="slide dark" ref={ref}>
+        <GCFlow corner="tr" tone="light" scale={1.4} opacity={0.55} />
+        <GCFlow corner="bl" tone="mid" scale={1.0} opacity={0.38} />
+        <div className="env-header">
+          <SlideHeader num="06" label="Environment"
+            right={d.env.incidents === 0 ? "CLEAN WEEK" : `${d.env.incidents} INCIDENT${d.env.incidents > 1 ? 'S' : ''}`}
+            rightColor={d.env.incidents === 0 ? PAL.light : PAL.orange}
+            dark={true} />
+        </div>
+        <div style={{ position: "absolute", top: 268, left: 80, right: 80 }}>
+          <div className="env-big-num t-display" data-val={d.env.incidents}
+            style={{ fontSize: 460, color: PAL.light, lineHeight: 0.85, letterSpacing: "-0.04em" }}>
+            {d.env.incidents}
+          </div>
+          <div className="env-word t-display" style={{ fontSize: 88, color: "#fff", marginTop: 10 }}>
+            environmental incident{d.env.incidents !== 1 ? 's' : ''}.
+          </div>
+          <DarkLogoStamp />
+          <p className="env-note t-body" style={{ fontSize: 27, color: "#fff", marginTop: 28, maxWidth: 1100, lineHeight: 1.4 }}>
+            {d.env.note}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  function SlidePriorities({ d }) {
+    const ref = useSlideAnim((el) => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+      const priHeader = el.querySelector('.pri-header');
+      const priHeadline = el.querySelector('.pri-headline');
+      const priCards = el.querySelectorAll('.pri-card');
+      const priFooter = el.querySelector('.pri-footer');
+      if (priHeader) tl.fromTo(priHeader, { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0);
+      if (priHeadline) tl.fromTo(priHeadline, { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: 'power3.out' }, 0.15);
+      if (priCards.length) tl.fromTo(priCards, { y: 60, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out', stagger: 0.12 }, 0.35);
+      el.querySelectorAll('.pri-num').forEach((num, i) => {
+        const target = parseInt(num.dataset.val) || 0;
+        const obj = { v: 0 };
+        tl.to(obj, { v: target, duration: 0.8, ease: 'power2.out', snap: { v: 1 },
+          onUpdate() { num.textContent = String(Math.round(obj.v)).padStart(2, '0'); }
+        }, 0.45 + i * 0.12);
+      });
+      if (priFooter) tl.fromTo(priFooter, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.9);
+    });
+
+    const count = d.priorities.length;
+    const countWords = ["Zero","One","Two","Three","Four","Five"];
+    const countWord = countWords[count] || String(count);
+
+    return (
+      <section className="slide" style={{ background: PAL.paper }} ref={ref}>
+        <div className="pri-header"><SlideHeader num="07" label="What's Next" right="LOOKING AHEAD" dark={false} /></div>
+        <h2 className="pri-headline t-display" style={{ position: "absolute", top: 150, left: 80, right: 80, fontSize: 96, color: PAL.dark, margin: 0 }}>
+          {countWord} thing{count !== 1 ? 's' : ''} on the list.
+        </h2>
+        <div style={{ position: "absolute", top: 370, left: 80, right: 80,
+          display: "grid", gridTemplateColumns: `repeat(${Math.min(count, 3)}, 1fr)`, gap: 22 }}>
+          {d.priorities.map((p, i) => (
+            <div key={i} className="pri-card" style={{ background: PAL.dark, color: "#fff", padding: 42,
+              minHeight: 420, display: "flex", flexDirection: "column" }}>
+              <div className="pri-num t-display" data-val={i + 1}
+                style={{ fontSize: 110, color: PAL.light, lineHeight: 0.9 }}>
+                {String(i+1).padStart(2,'0')}
+              </div>
+              <div className="t-display" style={{ fontSize: 36, marginTop: 26, lineHeight: 1.1 }}>{p.title}</div>
+              <p className="t-body" style={{ fontSize: 21, marginTop: 14, opacity: 0.88, lineHeight: 1.45 }}>{p.body}</p>
+              <div style={{ flex: 1 }} />
+              <div className="t-mono" style={{ fontSize: 12, color: PAL.light, letterSpacing: "0.22em",
+                borderTop: `1px solid ${PAL.light}44`, paddingTop: 14, marginTop: 22 }}>
+                PRIORITY {String(i+1).padStart(2,'0')}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="pri-footer"><SlideFooter d={d} /></div>
+      </section>
+    );
+  }
+
+  // Register GSAP plugins once
+  if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+  }
+
+  // Lazy-mount slides only when near viewport
+  function LazySlide({ id, label, Comp, data, scale }) {
+    const [mounted, setMounted] = React.useState(false);
+    const wrapRef = React.useRef(null);
+
+    React.useEffect(() => {
+      const el = wrapRef.current;
+      if (!el) return;
+      // Mount immediately if already in viewport, otherwise observe
+      const observer = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) { setMounted(true); observer.disconnect(); } },
+        { rootMargin: '200px' }
+      );
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, []);
+
+    return (
+      <div>
+        <div className="slide-label">{label}</div>
+        <div ref={wrapRef} className="slide-wrap" data-slide={id}
+          style={{ transform: `scale(${scale})`, height: 1080 * scale, width: 1920 }}>
+          {mounted
+            ? <Comp d={data} />
+            : <div className="slide dark" style={{ background: '#1a2a23', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="t-mono" style={{ color: '#B2D23560', fontSize: 14, letterSpacing: '0.2em' }}>LOADING...</div>
+              </div>
+          }
+        </div>
+      </div>
+    );
+  }
+
+  // ---- App ----
+  function App() {
+    const [data, setData] = useState(getData);
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+      const fit = () => {
+        const panelOpen = document.getElementById('edit-panel').classList.contains('open');
+        const availW = window.innerWidth - (panelOpen ? 420 : 0) - 64;
+        setScale(Math.min(1, availW / 1920));
+      };
+      fit();
+      window.addEventListener('resize', fit);
+
+      // Build edit fields now that React has mounted and Babel is done
+      if (window.buildEditFields) {
+        window.buildEditFields();
+      }
+
+      return () => window.removeEventListener('resize', fit);
+    }, []);
+
+    // Expose refresh fn to plain JS
+    window.__reactRender = () => {
+      setData(getData());
+      // Re-fit after panel state change
+      setTimeout(() => {
+        const panelOpen = document.getElementById('edit-panel').classList.contains('open');
+        const availW = window.innerWidth - (panelOpen ? 420 : 0) - 64;
+        setScale(Math.min(1, availW / 1920));
+      }, 50);
+    };
+
+    const slides = [
+      { id: "cover",      label: "Cover",           Comp: SlideCover },
+      { id: "dashboard",  label: "01 Dashboard",    Comp: SlideDashboard },
+      { id: "rospa",      label: "02 News",         Comp: SlideNews },
+      { id: "risk",       label: "03 Concentration",Comp: SlideRisk },
+      { id: "incident",   label: "04 Incident Desk",Comp: SlideIncident },
+      { id: "quality",    label: "05 Quality & IMS",Comp: SlideQuality },
+      { id: "env",        label: "06 Environment",  Comp: SlideEnvironment },
+      { id: "priorities", label: "07 What's Next",  Comp: SlidePriorities },
+    ];
+
+    return (
+      <>
+        {slides.map(({ id, label, Comp }) => (
+          <LazySlide key={id} id={id} label={label} Comp={Comp} data={data} scale={scale} />
+        ))}
+      </>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<script>
+  // Panel toggle — defined here so it's available before React mounts
+  function togglePanel() {
+    const panel = document.getElementById('edit-panel');
+    const btn = document.getElementById('edit-toggle');
+    const deck = document.getElementById('deck-container');
+    const isOpen = panel.classList.toggle('open');
+    btn.classList.toggle('panel-open', isOpen);
+    deck.classList.toggle('shifted', isOpen);
+    btn.style.writingMode = isOpen ? 'horizontal-tb' : 'vertical-rl';
+    btn.style.transform = isOpen ? 'translateY(-50%)' : 'translateY(-50%) rotate(180deg)';
+    btn.textContent = isOpen ? 'CLOSE' : 'EDIT WEEK';
+    // Re-fit slides after panel animation
+    setTimeout(() => { if (window.__reactRender) window.__reactRender(); }, 350);
+  }
+
+  const _dynamicTabs = new Set(['incident','quality','priorities']);
+  function showTab(id, el) {
+    document.querySelectorAll('.slide-tab').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.stab').forEach(b => b.classList.remove('stab-active'));
+    document.getElementById('tab-' + id).style.display = 'block';
+    if (el) el.classList.add('stab-active');
+    // Re-render dynamic cards every time a dynamic tab is opened
+    if (_dynamicTabs.has(id)) {
+      try { if(window.buildEditFields) window.buildEditFields(); } catch(e) { console.warn('buildEditFields:', e); }
+    }
+  }
+  function applyEdits() {
+    if (window._syncImsFromDOM)  window._syncImsFromDOM();
+    if (window._syncIncFromDOM)  window._syncIncFromDOM();
+    if (window._syncPriFromDOM)  window._syncPriFromDOM();
+    if (window.__reactRender)    window.__reactRender();
+  }
+
+  function toggleNewsFields() {
+    const style = document.getElementById('f-newsStyle').value;
+    ['award','stat','quote','milestone','alert'].forEach(s => {
+      const el = document.getElementById('news-' + s + '-fields');
+      if (el) el.style.display = s === style ? 'block' : 'none';
+    });
+  }
+
+  // ── Presentation Mode ────────────────────────────────────────────────────
+  let presIndex = 0;
+  let presSlides = [];
+
+  function enterPresentation() {
+    // Collect slide wrappers
+    presSlides = Array.from(document.querySelectorAll('[data-slide]'));
+    if (!presSlides.length) return;
+
+    presIndex = 0;
+    const pres = document.getElementById('presentation-mode');
+    pres.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    showPresSlide(presIndex);
+
+    document.addEventListener('keydown', presKeyHandler);
+  }
+
+  function exitPresentation() {
+    document.getElementById('presentation-mode').classList.remove('active');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', presKeyHandler);
+    // Clear pres slide
+    document.getElementById('pres-slide').innerHTML = '';
+  }
+
+  function showPresSlide(idx) {
+    const container = document.getElementById('pres-slide');
+    const counter = document.getElementById('pres-counter');
+    const source = presSlides[idx];
+    if (!source) return;
+
+    // Clone the slide
+    const clone = source.querySelector('.slide').cloneNode(true);
+
+    // Scale to fill viewport
+    const scaleX = window.innerWidth / 1920;
+    const scaleY = window.innerHeight / 1080;
+    const scale = Math.min(scaleX, scaleY);
+    clone.style.transform = `scale(${scale})`;
+    clone.style.transformOrigin = 'top left';
+    clone.style.position = 'absolute';
+    clone.style.top = `${(window.innerHeight - 1080 * scale) / 2}px`;
+    clone.style.left = `${(window.innerWidth - 1920 * scale) / 2}px`;
+
+    container.innerHTML = '';
+    container.appendChild(clone);
+    counter.textContent = `${idx + 1} / ${presSlides.length}`;
+
+    // Animate in
+    gsap.fromTo(clone, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' });
+  }
+
+  function presKeyHandler(e) {
+    if (e.key === 'Escape') { exitPresentation(); return; }
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (presIndex < presSlides.length - 1) { presIndex++; showPresSlide(presIndex); }
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (presIndex > 0) { presIndex--; showPresSlide(presIndex); }
+    }
+  }
+
+  // Handle window resize in presentation mode
+  window.addEventListener('resize', () => {
+    if (document.getElementById('presentation-mode').classList.contains('active')) {
+      showPresSlide(presIndex);
+    }
+  });
+</script>
+
+</body>
+</html>
