@@ -2506,7 +2506,13 @@
     document.querySelectorAll('.stab').forEach(b => b.classList.remove('stab-active'));
     document.getElementById('tab-' + id).style.display = 'block';
     if (el) el.classList.add('stab-active');
-    // Re-render dynamic cards every time a dynamic tab is opened
+
+    // Preserve in-progress edits before any dynamic tab re-render.
+    if (window._syncImsFromDOM) window._syncImsFromDOM();
+    if (window._syncIncFromDOM) window._syncIncFromDOM();
+    if (window._syncPriFromDOM) window._syncPriFromDOM();
+
+    // Re-render dynamic cards every time a dynamic tab is opened.
     if (_dynamicTabs.has(id)) {
       try { if(window.buildEditFields) window.buildEditFields(); } catch(e) { console.warn('buildEditFields:', e); }
     }
