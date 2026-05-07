@@ -573,36 +573,14 @@
     <div class="section-label" style="margin-top:4px">Accreditations</div>
     <div class="field-group"><label class="field-label">Total memberships held</label><input type="number" id="sp-mem-total" value="94"></div>
     <div style="margin-bottom:8px">
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:4px;margin-bottom:4px">
         <span class="field-label" style="margin:0">Name</span>
         <span class="field-label" style="margin:0">Expiry</span>
         <span class="field-label" style="margin:0">Days left</span>
         <span class="field-label" style="margin:0">Status</span>
+        <span class="field-label" style="margin:0">&nbsp;</span>
       </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
-        <input type="text" id="sp-cert-0-name" value="CLOCS Champion Membership">
-        <input type="text" id="sp-cert-0-expiry" value="01/04/26">
-        <input type="number" id="sp-cert-0-days" value="-30">
-        <input type="text" id="sp-cert-0-status" value="Expired">
-      </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
-        <input type="text" id="sp-cert-1-name" value="RISQS Audit — SAS">
-        <input type="text" id="sp-cert-1-expiry" value="05/06/26">
-        <input type="number" id="sp-cert-1-days" value="35">
-        <input type="text" id="sp-cert-1-status" value="Current">
-      </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
-        <input type="text" id="sp-cert-2-name" value="NIC EIC EV Certification">
-        <input type="text" id="sp-cert-2-expiry" value="06/01/25">
-        <input type="number" id="sp-cert-2-days" value="0">
-        <input type="text" id="sp-cert-2-status" value="Pending">
-      </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px">
-        <input type="text" id="sp-cert-3-name" value="Constructionline Platinum">
-        <input type="text" id="sp-cert-3-expiry" value="08/08/26">
-        <input type="number" id="sp-cert-3-days" value="99">
-        <input type="text" id="sp-cert-3-status" value="Current">
-      </div>
+      <div id="sp-certs-edit"></div>
     </div>
 
     <div class="section-label" style="margin-top:8px">Actions</div>
@@ -706,6 +684,13 @@
     },
   ];
 
+
+  const DEFAULT_SP_CERTS = [
+    { name: "CLOCS Champion Membership", expiry: "01/04/26", daysLeft: -30, status: "Expired" },
+    { name: "RISQS Audit — SAS", expiry: "05/06/26", daysLeft: 35, status: "Current" },
+    { name: "NIC EIC EV Certification", expiry: "06/01/25", daysLeft: 0, status: "Pending" },
+    { name: "Constructionline Platinum", expiry: "08/08/26", daysLeft: 99, status: "Current" },
+  ];
   const SEVERITY_ORDER = [
     "High severity · Major impact",
     "Medium severity · Moderate impact",
@@ -953,6 +938,43 @@
     window._syncPriFromDOM = syncPriFromDOM;
     console.log('[BEF] Rendering', window._priorityData.length, 'priority cards');
     renderPriorityCards(window._priorityData);
+
+    // ── SharePoint cert cards ─────────────────────
+    const certContainer = document.getElementById('sp-certs-edit');
+    if (!window._spCertData) window._spCertData = JSON.parse(JSON.stringify(DEFAULT_SP_CERTS));
+
+    function syncSpCertsFromDOM() {
+      if (!window._spCertData) return;
+      window._spCertData.forEach((c, i) => {
+        c.name = document.getElementById('sp-cert-'+i+'-name')?.value ?? c.name;
+        c.expiry = document.getElementById('sp-cert-'+i+'-expiry')?.value ?? c.expiry;
+        c.daysLeft = parseInt(document.getElementById('sp-cert-'+i+'-days')?.value || c.daysLeft || 0, 10) || 0;
+        c.status = document.getElementById('sp-cert-'+i+'-status')?.value ?? c.status;
+      });
+    }
+
+    function renderSpCerts(data) {
+      if (!certContainer) return;
+      certContainer.innerHTML = '';
+      data.forEach((c, i) => {
+        const row = makeEl('div', { style: 'display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:4px;margin-bottom:4px;align-items:center' });
+        const n = makeEl('input', { type: 'text', id: 'sp-cert-'+i+'-name' }); n.value = c.name || '';
+        const e = makeEl('input', { type: 'text', id: 'sp-cert-'+i+'-expiry' }); e.value = c.expiry || '';
+        const d = makeEl('input', { type: 'number', id: 'sp-cert-'+i+'-days' }); d.value = c.daysLeft ?? 0;
+        const s = makeEl('input', { type: 'text', id: 'sp-cert-'+i+'-status' }); s.value = c.status || '';
+        const rm = makeEl('button', { style: 'background:#1a0000;border:1px solid #ff444455;color:#ff8888;font-family:var(--font-mono);font-size:12px;width:24px;height:24px;cursor:pointer;border-radius:3px;line-height:1;padding:0' }, '−');
+        rm.onclick = () => { syncSpCertsFromDOM(); window._spCertData.splice(i, 1); if (!window._spCertData.length) window._spCertData.push({ name:'', expiry:'', daysLeft:0, status:'' }); renderSpCerts(window._spCertData); };
+        row.appendChild(n); row.appendChild(e); row.appendChild(d); row.appendChild(s); row.appendChild(rm);
+        certContainer.appendChild(row);
+      });
+      const addBtn = makeEl('button', { style: 'width:100%;margin-top:8px;background:#1a3a2a;border:1px dashed #B2D23560;color:#B2D235;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.18em;padding:10px;cursor:pointer;border-radius:3px' }, '+ ADD CERTIFICATION');
+      addBtn.onclick = () => { syncSpCertsFromDOM(); window._spCertData.push({ name:'', expiry:'', daysLeft:0, status:'' }); renderSpCerts(window._spCertData); };
+      certContainer.appendChild(addBtn);
+    }
+
+    window._syncSpCertsFromDOM = syncSpCertsFromDOM;
+    window._renderSpCerts = renderSpCerts;
+    renderSpCerts(window._spCertData);
   }
 
   // Run buildEditFields after page is fully ready
@@ -2086,11 +2108,11 @@
     const gv = (id, def) => { const el = document.getElementById(id); return el ? (el.value || def) : def; };
     const gn2 = (id, def) => parseInt(gv(id, def)) || def;
     return {
-      certExpiring: [0,1,2,3].map(i => ({
-        name:     gv('sp-cert-'+i+'-name',   ["CLOCS Champion Membership","RISQS Audit — SAS","NIC EIC EV Certification","Constructionline Platinum"][i]),
-        expiry:   gv('sp-cert-'+i+'-expiry', ["01/04/26","05/06/26","06/01/25","08/08/26"][i]),
-        daysLeft: gn2('sp-cert-'+i+'-days',  [-30,35,0,99][i]),
-        status:   gv('sp-cert-'+i+'-status', ["Expired","Current","Pending","Current"][i]),
+      certExpiring: (window._spCertData && window._spCertData.length ? window._spCertData : DEFAULT_SP_CERTS).map((c, i) => ({
+        name: gv('sp-cert-'+i+'-name', c.name || ''),
+        expiry: gv('sp-cert-'+i+'-expiry', c.expiry || ''),
+        daysLeft: gn2('sp-cert-'+i+'-days', c.daysLeft || 0),
+        status: gv('sp-cert-'+i+'-status', c.status || ''),
       })).filter(c => c.name),
       actions: {
         total:         gn2('sp-act-total',    379),
@@ -2506,7 +2528,14 @@
     document.querySelectorAll('.stab').forEach(b => b.classList.remove('stab-active'));
     document.getElementById('tab-' + id).style.display = 'block';
     if (el) el.classList.add('stab-active');
-    // Re-render dynamic cards every time a dynamic tab is opened
+
+    // Preserve in-progress edits before any dynamic tab re-render.
+    if (window._syncImsFromDOM) window._syncImsFromDOM();
+    if (window._syncIncFromDOM) window._syncIncFromDOM();
+    if (window._syncPriFromDOM) window._syncPriFromDOM();
+    if (window._syncSpCertsFromDOM) window._syncSpCertsFromDOM();
+
+    // Re-render dynamic cards every time a dynamic tab is opened.
     if (_dynamicTabs.has(id)) {
       try { if(window.buildEditFields) window.buildEditFields(); } catch(e) { console.warn('buildEditFields:', e); }
     }
@@ -2515,6 +2544,7 @@
     if (window._syncImsFromDOM)  window._syncImsFromDOM();
     if (window._syncIncFromDOM)  window._syncIncFromDOM();
     if (window._syncPriFromDOM)  window._syncPriFromDOM();
+    if (window._syncSpCertsFromDOM) window._syncSpCertsFromDOM();
     if (window.__reactRender)    window.__reactRender();
   }
 
