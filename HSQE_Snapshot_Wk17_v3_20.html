@@ -205,6 +205,7 @@
     .stab-active { background: #B2D235; color: #294238 !important; border-color: #B2D235 !important; font-weight: 700; }
 
 
+    .apply-btn {
       display: block;
       width: calc(100% - 56px);
       margin: 20px 28px 0;
@@ -383,12 +384,12 @@
       <span class="field-label" style="margin:0;text-align:center">Red</span>
       <span class="field-label" style="margin:0;text-align:center">Amber</span>
     </div>
-    <div class="bu-row"><div class="bu-name">Maintenance</div><input type="number" id="bu-0-red" value="3"><input type="number" id="bu-0-amber" value="197"></div>
-    <div class="bu-row"><div class="bu-name">Infra & Utilities</div><input type="number" id="bu-1-red" value="5"><input type="number" id="bu-1-amber" value="66"></div>
-    <div class="bu-row"><div class="bu-name">LDE</div><input type="number" id="bu-2-red" value="1"><input type="number" id="bu-2-amber" value="20"></div>
-    <div class="bu-row"><div class="bu-name">GC Ireland</div><input type="number" id="bu-3-red" value="0"><input type="number" id="bu-3-amber" value="16"></div>
-    <div class="bu-row"><div class="bu-name">Central Functions</div><input type="number" id="bu-4-red" value="0"><input type="number" id="bu-4-amber" value="0"></div>
-    <div class="bu-row"><div class="bu-name">Land & Water</div><input type="number" id="bu-5-red" value="0"><input type="number" id="bu-5-amber" value="7"></div>
+    <div class="bu-row"><input type="text" id="bu-0-name" class="bu-name" value="Maintenance"><input type="number" id="bu-0-red" value="3"><input type="number" id="bu-0-amber" value="197"></div>
+    <div class="bu-row"><input type="text" id="bu-1-name" class="bu-name" value="Infrastructure & Utilities"><input type="number" id="bu-1-red" value="5"><input type="number" id="bu-1-amber" value="66"></div>
+    <div class="bu-row"><input type="text" id="bu-2-name" class="bu-name" value="LDE"><input type="number" id="bu-2-red" value="1"><input type="number" id="bu-2-amber" value="20"></div>
+    <div class="bu-row"><input type="text" id="bu-3-name" class="bu-name" value="GC Ireland"><input type="number" id="bu-3-red" value="0"><input type="number" id="bu-3-amber" value="16"></div>
+    <div class="bu-row"><input type="text" id="bu-4-name" class="bu-name" value="Central Functions"><input type="number" id="bu-4-red" value="0"><input type="number" id="bu-4-amber" value="0"></div>
+    <div class="bu-row"><input type="text" id="bu-5-name" class="bu-name" value="Land & Water Solutions"><input type="number" id="bu-5-red" value="0"><input type="number" id="bu-5-amber" value="7"></div>
   </div>
 
   <!-- ── DASHBOARD ──────────────────────────────── -->
@@ -535,7 +536,30 @@
     <p style="font-size:11px;color:#ffffff40;font-family:var(--font-mono);padding:0 0 12px;line-height:1.5;">
       Slide layout adapts: 0, 1, 2–3, or 4+ harm events. Highest severity auto-featured. Use + / − to add or remove incidents.
     </p>
-    <div id="incident-cards-edit"></div>
+    <div id="incident-cards-edit">
+      <div class="ims-card-edit">
+        <label class="field-label">Severity</label>
+        <select id="inc-0-severity" style="width:100%;background:#0c1614;border:1px solid #B2D23330;color:#fff;padding:7px 8px;font-family:var(--font-mono);font-size:11px;border-radius:3px;margin-bottom:6px">
+          <option>High severity · Major impact</option>
+          <option>Medium severity · Moderate impact</option>
+          <option selected>Low severity · Minor impact</option>
+          <option>Near miss</option>
+        </select>
+        <input type="text" id="inc-0-type" placeholder="Mechanism e.g. Slip / Trip / Fall" value="Slip / Trip / Fall" style="margin-bottom:6px">
+        <input type="text" id="inc-0-bu" placeholder="Business unit" value="Maintenance" style="margin-bottom:6px">
+        <textarea id="inc-0-summary" placeholder="What happened..." style="margin-bottom:6px;min-height:54px">An operative reversing a rotavator close to a fenceline caught his hand on the fence and suffered a minor soft tissue injury.</textarea>
+        <textarea id="inc-0-learning" placeholder="Learning / action..." style="margin-bottom:6px;min-height:54px">Reinforcing situational awareness near perimeter features during reverse manoeuvres.</textarea>
+        <input type="text" id="inc-0-status" placeholder="Status" value="Under investigation" style="margin-bottom:6px">
+        <div style="display:flex;gap:14px;align-items:center;margin-bottom:4px">
+          <label style="font-family:var(--font-mono);font-size:11px;color:#ffffffa0;"><input type="checkbox" id="inc-0-riddor"> RIDDOR</label>
+          <label style="font-family:var(--font-mono);font-size:11px;color:#ffffffa0;"><input type="checkbox" id="inc-0-lti"> LTI</label>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <button type="button" onclick="addIncidentCard()" style="background:#1a3a2a;border:1px dashed #B2D23560;color:#B2D235;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.16em;padding:9px;cursor:pointer;border-radius:3px">+ ADD INCIDENT</button>
+      <button type="button" onclick="removeIncidentCard()" style="background:#2a1111;border:1px dashed #F5782180;color:#ffb07a;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.16em;padding:9px;cursor:pointer;border-radius:3px">− REMOVE LAST</button>
+    </div>
     <div class="section-label" style="margin-top:16px">Top Hazard Signal</div>
     <div class="field-group">
       <label class="field-label">Context note (blank to auto-generate from hazard mix)</label>
@@ -614,7 +638,15 @@
     <p style="font-size:11px;color:#ffffff40;font-family:var(--font-mono);padding:0 0 8px;line-height:1.5;">
       Written each week. Use + / − to add or remove cards.
     </p>
-    <div id="ims-cards-edit"></div>
+    <div id="ims-cards-edit">
+      <div class="ims-card-edit"><input type="text" id="ims-0-tag" value="Audit"><input type="text" id="ims-0-title" value="Constructionline — Building Safety Act"><textarea id="ims-0-body">Submission with Constructionline for AI to review documentation & evidence. All other areas approved and verified.</textarea></div>
+      <div class="ims-card-edit"><input type="text" id="ims-1-tag" value="Internal"><input type="text" id="ims-1-title" value="Temporary Works gap analysis"><textarea id="ims-1-body">Internal audit gap analysis completed and report distributed.</textarea></div>
+      <div class="ims-card-edit"><input type="text" id="ims-2-tag" value="Tooling"><input type="text" id="ims-2-title" value="IMS Phone App"><textarea id="ims-2-body">Continued development; running noticeably faster. Quality team now using the new app to complete Q checks.</textarea></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <button type="button" onclick="addImsCard()" style="background:#1a3a2a;border:1px dashed #B2D23560;color:#B2D235;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.16em;padding:9px;cursor:pointer;border-radius:3px">+ ADD IMS CARD</button>
+      <button type="button" onclick="removeImsCard()" style="background:#2a1111;border:1px dashed #F5782180;color:#ffb07a;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.16em;padding:9px;cursor:pointer;border-radius:3px">− REMOVE LAST</button>
+    </div>
   </div>
 
   <!-- ── ENVIRONMENT ────────────────────────────── -->
@@ -633,7 +665,11 @@
   <!-- ── WHAT'S NEXT ────────────────────────────── -->
   <div id="tab-priorities" class="slide-tab" style="display:none">
     <div class="section-label">What's Next — Priorities</div>
-    <div id="priorities-edit"></div>
+    <div id="priorities-edit">
+      <div class="priority-edit"><label class="field-label">Title</label><input type="text" id="pri-0-title" value="HSQE KPI Dashboard"><label class="field-label">Description</label><textarea id="pri-0-body">Implement suggested improvements.</textarea></div>
+      <div class="priority-edit"><label class="field-label">Title</label><input type="text" id="pri-1-title" value="RAMS Creator in IMS App"><label class="field-label">Description</label><textarea id="pri-1-body">Build out the in-app RAMS workflow.</textarea></div>
+      <div class="priority-edit"><label class="field-label">Title</label><input type="text" id="pri-2-title" value="Update permit procedures"><label class="field-label">Description</label><textarea id="pri-2-body">Re-issue IMS docs to reflect new permit processes.</textarea></div>
+    </div>
   </div>
 
   <button class="apply-btn" onclick="applyEdits()">Apply Changes</button>
@@ -941,15 +977,73 @@
   }
   // Expose immediately so script3 can call it
   window.buildEditFields = tryBuildEditFields;
+  // Kick off initial render of dynamic edit controls
+  tryBuildEditFields();
 
   // toggleNewsFields stays here as it needs DOM access
-
-
+  function toggleNewsFields() {
     const style = document.getElementById('f-newsStyle').value;
     ['award','stat','quote','milestone','alert'].forEach(s => {
       const el = document.getElementById(`news-${s}-fields`);
       if (el) el.style.display = s === style ? 'block' : 'none';
     });
+  }
+
+  function addIncidentCard() {
+    if (window._syncIncFromDOM && window._renderIncidentCards && window._incidentData) {
+      window._syncIncFromDOM();
+      window._incidentData.push({ severity: 'Low severity · Minor impact', type: '', bu: '', summary: '', learning: '', riddor: false, lti: false, status: 'Under investigation' });
+      window._renderIncidentCards(window._incidentData);
+      return;
+    }
+    const c = document.getElementById('incident-cards-edit');
+    const cards = c ? c.querySelectorAll('.ims-card-edit') : [];
+    const i = cards.length;
+    if (!c) return;
+    const d = document.createElement('div');
+    d.className = 'ims-card-edit';
+    d.innerHTML = `<label class="field-label">Severity</label><select id="inc-${i}-severity" style="width:100%;background:#0c1614;border:1px solid #B2D23330;color:#fff;padding:7px 8px;font-family:var(--font-mono);font-size:11px;border-radius:3px;margin-bottom:6px"><option>High severity · Major impact</option><option>Medium severity · Moderate impact</option><option selected>Low severity · Minor impact</option><option>Near miss</option></select><input type="text" id="inc-${i}-type" placeholder="Mechanism e.g. Slip / Trip / Fall" style="margin-bottom:6px"><input type="text" id="inc-${i}-bu" placeholder="Business unit" style="margin-bottom:6px"><textarea id="inc-${i}-summary" placeholder="What happened..." style="margin-bottom:6px;min-height:54px"></textarea><textarea id="inc-${i}-learning" placeholder="Learning / action..." style="margin-bottom:6px;min-height:54px"></textarea><input type="text" id="inc-${i}-status" placeholder="Status" value="Under investigation" style="margin-bottom:6px"><div style="display:flex;gap:14px;align-items:center;margin-bottom:4px"><label style="font-family:var(--font-mono);font-size:11px;color:#ffffffa0;"><input type="checkbox" id="inc-${i}-riddor"> RIDDOR</label><label style="font-family:var(--font-mono);font-size:11px;color:#ffffffa0;"><input type="checkbox" id="inc-${i}-lti"> LTI</label></div>`;
+    c.appendChild(d);
+  }
+  function removeIncidentCard() {
+    if (window._syncIncFromDOM && window._renderIncidentCards && window._incidentData) {
+      window._syncIncFromDOM();
+      if (window._incidentData.length > 1) window._incidentData.pop();
+      window._renderIncidentCards(window._incidentData);
+      return;
+    }
+    const c = document.getElementById('incident-cards-edit');
+    if (!c) return;
+    const cards = c.querySelectorAll('.ims-card-edit');
+    if (cards.length > 1) cards[cards.length - 1].remove();
+  }
+
+  function addImsCard() {
+    if (window._syncImsFromDOM && window._renderImsCards && window._imsData) {
+      window._syncImsFromDOM();
+      window._imsData.push({ tag: '', title: '', body: '' });
+      window._renderImsCards(window._imsData);
+      return;
+    }
+    const c = document.getElementById('ims-cards-edit');
+    if (!c) return;
+    const i = c.querySelectorAll('.ims-card-edit').length;
+    const d = document.createElement('div');
+    d.className = 'ims-card-edit';
+    d.innerHTML = `<input type="text" id="ims-${i}-tag" placeholder="Tag"><input type="text" id="ims-${i}-title" placeholder="Title"><textarea id="ims-${i}-body" placeholder="Update details..."></textarea>`;
+    c.appendChild(d);
+  }
+  function removeImsCard() {
+    if (window._syncImsFromDOM && window._renderImsCards && window._imsData) {
+      window._syncImsFromDOM();
+      if (window._imsData.length > 1) window._imsData.pop();
+      window._renderImsCards(window._imsData);
+      return;
+    }
+    const c = document.getElementById('ims-cards-edit');
+    if (!c) return;
+    const cards = c.querySelectorAll('.ims-card-edit');
+    if (cards.length > 1) cards[cards.length - 1].remove();
   }
 
 </script>
@@ -1022,7 +1116,7 @@
     const buDefRed   = [3,5,1,0,0,0];
     const buDefAmber = [197,66,20,16,0,7];
     const businessUnits = buNames.map((name, i) => ({
-      name,
+      name: document.getElementById('bu-'+i+'-name')?.value || name,
       red:   parseInt(document.getElementById('bu-'+i+'-red')?.value)   || buDefRed[i],
       amber: parseInt(document.getElementById('bu-'+i+'-amber')?.value) || buDefAmber[i],
     }));
