@@ -1,0 +1,197 @@
+﻿"ID","GC Division","Include in stats","Inspection Title","Template Name","Incident Number","Date Started","Date Completed","Reported By","GC Division: Business Unit Group","Division","Subdivision","Incident Type","Incident Subtype","HSQE Trend Types","Category","New Type","New Subtype","New Trend Type","Impact","Potential Impact","Report Detail","FT Involved","DE/FT Name","Divisional Manager","Client","Site / Location","Region","Route","GPS Location","Resolved","HSQE Representative/s","Investigation Owners","Reference Number","Lost Time","Investigation Completed","Email this incident to","Communications Sent","Send Email","Notified Client","Extra Works","FIxed Price in £","Notes","Riddor Reference","Created","Injury Information","Time Taken"
+"39830","NGED","Yes","5 May 2026 / Benet Jones","AMBER ALERT - GC MANAGERS - RMS/044","INC39830","05/05/2026","05/05/2026","Benet Jones","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Electrical","Hazard / Close Call","Health & Safety","Injury","Electrocution","Opportunity","Minor","Surveying and came across a pole with a small ladder against it and objects attached to it","No","N/A","Benet jones","3308 : National Grid Electricity Distribution plc","Site Name: 
+Project Name: 
+ELR:
+W3W: ///damp.left.fats
+Junction: 
+RCC: 
+Structure: 
+Description:Small caravan living area","Coventry / Warwick","N/A","Sherbourne Residences Block, 3 Scarman Rd, Coventry CV4 7ES, UK","Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: Raising Amber alert to bring awareness 
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 08:14",,"2"
+"39832","NGED","Yes","5 May 2026 / Daniel Hackett","AMBER ALERT - GC MANAGERS - RMS/044","INC39832","05/05/2026","05/05/2026","Daniel Hackett","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Asset / Tool Damage","Customer Asset Damage","Opportunity","Minor","Surveying pole XFE50 on Southam 930060/0005 and reporting a heavy left lean on pole. ","No","N/A","NGED","3308 : National Grid Electricity Distribution plc","Site Name: 
+Project Name: 
+ELR:
+W3W: ///defrost.nuance.detergent
+Junction: 
+RCC: 
+Structure: 
+Description:As above. Pole XFE50, Southam 0005","Coventry / Warwick","N/A","Welsh Rd E, Southam CV47 1NB, UK","Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: Reported to CDM
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 09:58",,"4"
+"39840","SSE","Yes","30 Apr 2026 / William Heneage","AMBER ALERT - GC MANAGERS - RMS/044","INC39840","05/05/2026","05/05/2026","William Heneage","Infrastructure & Utilities","Infrastructure & Utilities","SSE","Hazard","Health & Safety","Vehicle","Hazard / Close Call","Fleet","Road Traffic Incident - Non Motorway","Field Team Vehicle RTI","Opportunity","Minor","Right side Tow behind Chipper indicator broken","Yes","7397 Brinksworth Tree Services Ltd","Wil Heneage","3086 : SSE CONTRACTING","Site Name: 
+Project Name: 
+ELR:
+W3W: anyone.fiery.recently
+Junction: 
+RCC: 
+Structure: 
+Description:With in Lane closure on A303","Salisbury","N/A","A303, United Kingdom
+(51.1940266, -1.6532123)","Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: Team to replace ASAP
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 10:43",,"5"
+"39841","NGED","Yes","5 May 2026 / Daniel Hackett","AMBER ALERT - GC MANAGERS - RMS/044","INC39841","05/05/2026","05/05/2026","Daniel Hackett","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Asset / Tool Damage","Customer Asset Damage","Opportunity","Minor","Surveying on Southam 930060/0005. Pole XFEH3 has heavy lean to left. ","No","N/A","NGED","3308 : National Grid Electricity Distribution plc","Site Name: 
+Project Name: 
+ELR:
+W3W: ///pavement.bonus.musically
+Junction: 
+RCC: 
+Structure: 
+Description:As per above info.
+///pavement.bonus.musically
+Pole XFEH3, Southam 0005","Coventry / Warwick","N/A","Napton Holt/Holt Rd, Southam CV47 1AJ, UK","No",,,,"0","Allocation","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: Informed CDM
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 10:45",,"2"
+"39846","NGED","Yes","5 May 2026 / 3199 Lincolnshire Hardwoods Ltd","AMBER ALERT - GC TEAMS - RMS/053","INC39846","05/05/2026","05/05/2026","3199 Lincolnshire Hardwoods Ltd","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Vegetation","Hazard / Close Call","Ecology & Vegetation","Flora","Vegetation","Opportunity","Minor","Large amounts of thorn/bramble on site","Yes","3199 Lincolnshire Hardwoods Ltd","V ivins","3308 : National Grid Electricity Distribution plc","Site Name: Denton reactive
+Project Name: 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:Woodland","Lincs South","N/A","Nether Lane
+Grantham England NG32
+United Kingdom
+(52.884814462849086, -0.7080914987255787)","Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: Mulcher on site, be aware
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 11:15",,"6"
+"39862","SSE","Yes","5 May 2026 / Joe Lemar","AMBER ALERT - GC MANAGERS - RMS/044","INC39862","05/05/2026","05/05/2026","Joe Lemar","Infrastructure & Utilities","Infrastructure & Utilities","SSE","Hazard","Health & Safety","Trip hazard","Hazard / Close Call","Health & Safety","Injury","Slips / Trips / Falls","Opportunity","Minor","Whilst conducting 33kv survey, walking through long grass I stepped into a hidden hole in the ground. Hole was hidden by grass and other vegetation, no injury. ","No","N/A","Joe lemar","N/A","Site Name: Kenn-osne yellow site 1
+Project Name: 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:///hints.coats.admire","Oxford","N/A","Holywell House, 64 Osney Mead, Oxford OX2 0ES, UK","Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: I have noted the location as this will be a work site for a field team. I have also picked up a stick to use as a probe whilst finishing the survey
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 12:15",,"4"
+"39865","NGED","Yes","5 May 2026 / Daniel Hackett","AMBER ALERT - GC MANAGERS - RMS/044","INC39865","05/05/2026","05/05/2026","Daniel Hackett","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Asset / Tool Damage","Customer Asset Damage","Opportunity","Minor","Surveying pole XFEJ5 on Southam 930060/0005. 
+Heavy left lean on post. XFEJ6 also being pulled to left because of this","No",,"NGED","3308 : National Grid Electricity Distribution plc","Site Name: 
+Project Name: 
+ELR:
+W3W: ///habits.lousy.unicorns
+Junction: 
+RCC: 
+Structure: 
+Description:As per above info, Southam 0005, pole XFEJ5 and XFEJ6","Coventry / Warwick","N/A","Welsh Rd, Southam CV47, UK","Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: CDM informed 
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 13:14",",,,,,,,,,,Injured Person 1,","7"
+"39875","NGED","Yes","5 May 2026 / Daniel Hackett","AMBER ALERT - GC MANAGERS - RMS/044","INC39875","05/05/2026","05/05/2026","Daniel Hackett","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Asset / Tool Damage","Customer Asset Damage","Opportunity","Minor","Surveying pole XFEJ12 on Southam 930060/0005 and heavy left lean on pole.","No","N/A","NGED","3308 : National Grid Electricity Distribution plc","Site Name: 
+Project Name: 
+ELR:
+W3W: ///spectacle.mows.otherwise
+Junction: 
+RCC: 
+Structure: 
+Description:As above. Pole XFEJ12, Southam 0005","Coventry / Warwick","N/A","Welsh Rd, Southam CV47 1UZ, UK","Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: Reported to CDM
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 14:46",,"4"
+"39877","UKPN","Yes","5 May 2026 / 7996 M G Tree Surgery Ltd 1","AMBER ALERT - GC TEAMS - RMS/053","INC39877","05/05/2026","05/05/2026","7996 M G Tree Surgery Ltd 1","Infrastructure & Utilities","Infrastructure & Utilities","UKPN","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Asset / Tool Damage","Structural Safety","Opportunity","Minor","Noticed a severed stay wire, it is also missing a stay wire insulator.
+
+Location: track accessible from, 2 the granary buildings, Millow, Dunston, Biggleswade, SG18 8RH
+
+Pole no: 417854
+
+W3W: sparrows.Unstable.Design ",,"N/A",,"3679 : UK Power Networks","Site Name: 
+Project Name: 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:","EPN North - Cambridge","N/A",,"Yes",,,,"0","N/A","James Angus;Rory Chisholm;Richard Moses;Emily Eva","Yes",,"N/A","No","£0.00","Actions Taken: 
+Actions RaisedNone
+SC Notes: None","N/A","05/05/2026 14:59",,"6"
+"39944","NGED","Yes","5 May 2026 / 8319 Ropes and Slopes Limited","AMBER ALERT - GC TEAMS - RMS/053","INC39944","05/05/2026","06/05/2026","8319 Ropes and Slopes Limited","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Cables & Trough Route","Hazard / Close Call","Health & Safety","Injury","Entrapment","Opportunity","Minor","Wire was entangled in the brambles while clearing around a pole ","Yes","8319 Ropes and Slopes Limited","James Donnellan ","3308 : National Grid Electricity Distribution plc","Site Name: Money Hill Farm 930102
+Project Name: 
+ELR:
+W3W: Circus.cassettes.witty
+Junction: 
+RCC: 
+Structure: 
+Description:Back of farm building behind the cow sheds ","Coventry / Warwick","N/A","De128ae","Yes",,,,"0","N/A",,"No",,"N/A","No","£0.00","Actions Taken: Had a visual inspection before work was carried out
+Actions RaisedNone
+SC Notes: None","N/A","06/05/2026 19:14",,"10"
+"40005","SSE","Yes","7 May 2026 / Joshua Stones","AMBER ALERT - GC MANAGERS - RMS/044","INC40005","07/05/2026","07/05/2026","Joshua Stones","Infrastructure & Utilities","Infrastructure & Utilities","SSE","Hazard","Health & Safety","Invasive & Dangerous Insects","Hazard / Close Call","Ecology & Vegetation","Fauna","Insects","Opportunity","Minor","Walking though tall grass and found a few ticks on my leg ","No","N/A","Joshua stones","N/A","Site Name: 
+Project Name: 
+ELR:
+W3W: File.kinds.breakfast
+Junction: 
+RCC: 
+Structure: 
+Description:In a field","Yeovil","N/A","The Old Mill, 2 Mill Cottages, Ludwell, Shaftesbury SP7 9NF, UK","Yes",,,,"0","N/A",,"No",,"N/A","No","£0.00","Actions Taken: Take a few mintuies to check yourself after walking though tall grass or woodlands
+Actions RaisedNone
+SC Notes: None","N/A","07/05/2026 15:01",,"4"
+"40009","NGED","Yes","7 May 2026 / Mark Davies","AMBER ALERT - GC MANAGERS - RMS/044","INC40009","07/05/2026","07/05/2026","Mark Davies","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Asset / Tool Damage","Customer Asset Damage","Opportunity","Minor","An LV pole which is not on my survey remit is heavily infested with Ivy","No","N/A","Mark Davies ","3308 : National Grid Electricity Distribution plc","Site Name: 893042 Grays Lane Halam, LV 5111990010
+Project Name: 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:From LV pole 5111990010
+///maps.shocked.tasteful","Chesterfield / Mansfield","N/A","(53.082669514645346, -0.9924556835371857)","No",,,,"0","Allocation",,"No",,"N/A","No","£0.00","Actions Taken: Reported through our safety culture app for a report to be sent to the client 
+Actions RaisedNone
+SC Notes: None","N/A","07/05/2026 17:45",,"6"
+"40018","SSE","Yes","8 May 2026 / Joshua Stones","AMBER ALERT - GC MANAGERS - RMS/044","INC40018","08/05/2026","08/05/2026","Joshua Stones","Infrastructure & Utilities","Infrastructure & Utilities","SSE","Hazard","Health & Safety","Weather","Hazard / Close Call","Environment","Weather and Flooding","Extreme Heat","Opportunity","Minor","Hot weather",,"N/A",,"N/A","Site Name: 
+Project Name: 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:","Yeovil","N/A",,"No",,,,"0","Pending",,"No",,"N/A","No","£0.00","Actions Taken: 
+Actions RaisedNone
+SC Notes: None","N/A","08/05/2026 09:30",,"1"
+"40031","SSE","Yes","8 May 2026 / Gerard Hendry","AMBER ALERT - GC MANAGERS - RMS/044","INC40031","08/05/2026","08/05/2026","Gerard Hendry","Infrastructure & Utilities","Infrastructure & Utilities","SSE","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Building / Facilities Damage","Structural Safety","Opportunity","Minor","Shaf E1 11kv pole 26 in-between sites 104 and 105. Loose stay wire has resulted in pole leaning. ","No","N/A","Lyndon Taylor ","3086 : SSE CONTRACTING","Site Name: Shaf E1 Between 104 and 105. Pole number 26 
+Project Name: 
+ELR:
+W3W: ///anyone.helped.drew
+Junction: 
+RCC: 
+Structure: 
+Description:N/A","Yeovil","N/A","A30, Shaftesbury SP7, UK","No",,,,"0","Allocation",,"No",,"N/A","No","£0.00","Actions Taken: QSI has been notified 
+Actions RaisedNone
+SC Notes: None","N/A","08/05/2026 12:46",,"10"
+"40032","SSE","Yes","8 May 2026 / Joe Lemar","AMBER ALERT - GC MANAGERS - RMS/044","INC40032","08/05/2026","08/05/2026","Joe Lemar","Infrastructure & Utilities","Infrastructure & Utilities","SSE","Hazard","Health & Safety","Damaged Asset","Hazard / Close Call","Property & Infrastructure","Building / Facilities Damage","Customer Asset Damage","Opportunity","Minor","During a 11kV PSI, whilst working in a tree to clear the HV overhead the climber noticed the underslung LV ABC had multiple rub throughs on all 3 phases and one phase had snapped. 
+LV was confirmed dead for the outage so no electrical risk. 
+
+Lv could not be fully seen prior to accessing the tree due to heavy vegetation. ","No","N/A","Joe lemar","3086 : SSE CONTRACTING","Site Name: COLO e13 site 70
+Project Name: 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:Garden to the rear of Downs View Cottages","Oxford","N/A","Downs View Cottages, Wheatley Rd, Garsington, Oxford OX44 9DU, UK","No",,,,"0","Allocation",,"No",,"N/A","No","£0.00","Actions Taken: SAP made immediately aware and raised to SSE as a fault. 
+Exclusion around section of network to prevent further damage. 
+Actions RaisedNone
+SC Notes: None","N/A","08/05/2026 13:16",,"5"
+"40036","UKPN","Yes","8 May 2026 / 7996 M G Tree Surgery Ltd 1","AMBER ALERT - GC TEAMS - RMS/053","INC40036","08/05/2026","08/05/2026","7996 M G Tree Surgery Ltd 1","Infrastructure & Utilities","Infrastructure & Utilities","UKPN","Hazard","Health & Safety","DDD Trees","Hazard / Close Call","Ecology & Vegetation","Flora","DDD Trees","Opportunity","Minor","Spotted a dodgy old Ash coppice, with large cavity and heavy lean towards the network.
+
+E16B between poles 417695-4
+
+
+W3W location of tree: install.appoints.slicing 
+
+Access: field off Potton road, Guilden Morden, Sandy, SG19 3LJ",,"N/A",,"N/A","Site Name: 
+Project Name: 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:","EPN North - Cambridge","N/A",,"No",,,,"0","Allocation",,"No",,"N/A","No","£0.00","Actions Taken: 
+Actions RaisedNone
+SC Notes: None","N/A","08/05/2026 13:35",,"6"
+"40041","NGED","Yes","8 May 2026 / Rodney Taylor","AMBER ALERT - GC MANAGERS - RMS/044","INC40041","08/05/2026","08/05/2026","Rodney Taylor","Infrastructure & Utilities","Infrastructure & Utilities","NGED","Hazard","Health & Safety","Animals","Hazard / Close Call","Ecology & Vegetation","Fauna","Animals","Opportunity","Minor","Not able to access field as horse in paddock and electric fence on.","No","N/A","Rod Taylor ","N/A","Site Name: 
+Project Name: 910026/0006 pole HHFB24 
+ELR:
+W3W: 
+Junction: 
+RCC: 
+Structure: 
+Description:Farm paddock","Lincs South","N/A","Coneygarth House, Hurn Bank, Holbeach Hurn, Holbeach, Spalding PE12 8JL, UK
+(52.8273035, 0.0414028)","No",,,,"0","Allocation",,"No",,"N/A","No","£0.00","Actions Taken: Was able to taken picture of span from edge of field.
+Actions RaisedNone
+SC Notes: None","N/A","08/05/2026 14:31",,"3"

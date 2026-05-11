@@ -375,7 +375,7 @@
     </div>
     <div class="field-group">
       <label class="field-label">Cover subline (leave blank to auto-generate)</label>
-      <input type="text" id="f-coverLine" placeholder="Seven days. 326 events. One incident.">
+      <input type="text" id="f-coverLine" placeholder="Seven days. 326 events. One incident." value="Seven days. 17 events. Zero incidents.">
     </div>
 
     <div class="section-label" style="margin-top:16px">Business Units</div>
@@ -384,10 +384,10 @@
       <span class="field-label" style="margin:0;text-align:center">Red</span>
       <span class="field-label" style="margin:0;text-align:center">Amber</span>
     </div>
-    <div class="bu-row"><div class="bu-name" >Maintenance</div><input type="number" id="bu-0-red" value="0"><input type="number" id="bu-0-amber" value="0"></div>
-    <div class="bu-row"><div class="bu-name" >Infra & Utilities</div><input type="number" id="bu-1-red" value="1"><input type="number" id="bu-1-amber" value="16"></div>
-    <div class="bu-row"><div class="bu-name" >LDE</div><input type="number" id="bu-2-red" value="0"><input type="number" id="bu-2-amber" value="0"></div>
-    <div class="bu-row"><div class="bu-name" >GC Ireland</div><input type="number" id="bu-3-red" value="1"><input type="number" id="bu-3-amber" value="0"></div>
+    <div class="bu-row"><div class="bu-name" >Maintenance</div><input type="number" id="bu-0-red" value="0"><input type="number" id="bu-0-amber" value="9"></div>
+    <div class="bu-row"><div class="bu-name" >Infra & Utilities</div><input type="number" id="bu-1-red" value="0"><input type="number" id="bu-1-amber" value="6"></div>
+    <div class="bu-row"><div class="bu-name" >LDE</div><input type="number" id="bu-2-red" value="0"><input type="number" id="bu-2-amber" value="2"></div>
+    <div class="bu-row"><div class="bu-name" >GC Ireland</div><input type="number" id="bu-3-red" value="0"><input type="number" id="bu-3-amber" value="0"></div>
     <div class="bu-row"><div class="bu-name" >Central Functions</div><input type="number" id="bu-4-red" value="0"><input type="number" id="bu-4-amber" value="0"></div>
     <div class="bu-row"><div class="bu-name" >Land & Water</div><input type="number" id="bu-5-red" value="0"><input type="number" id="bu-5-amber" value="0"></div>
   </div>
@@ -397,15 +397,15 @@
     <div class="section-label">Key Stats</div>
     <div class="field-row">
       <div class="field-group"><label class="field-label">Total Events</label><input type="number" id="f-events" value="17"></div>
-      <div class="field-group"><label class="field-label">Hazards</label><input type="number" id="f-hazards" value="16"></div>
+      <div class="field-group"><label class="field-label">Hazards</label><input type="number" id="f-hazards" value="17"></div>
     </div>
     <div class="field-row">
-      <div class="field-group"><label class="field-label">Incidents</label><input type="number" id="f-incidents" value="1"></div>
+      <div class="field-group"><label class="field-label">Incidents</label><input type="number" id="f-incidents" value="0"></div>
       <div class="field-group"><label class="field-label">Near Misses</label><input type="number" id="f-nearMisses" value="0"></div>
     </div>
     <div class="field-row">
       <div class="field-group"><label class="field-label">Best Practice</label><input type="number" id="f-bestPractice" value="0"></div>
-      <div class="field-group"><label class="field-label">Harm Incidents</label><input type="number" id="f-harmIncidents" value="1"></div>
+      <div class="field-group"><label class="field-label">Harm Incidents</label><input type="number" id="f-harmIncidents" value="0"></div>
     </div>
     <div class="field-row">
       <div class="field-group"><label class="field-label">RIDDOR</label><input type="number" id="f-riddor" value="0"></div>
@@ -413,16 +413,16 @@
     </div>
     <div class="field-group">
       <label class="field-label">H/NM to incident ratio</label>
-      <input type="text" id="f-ratio" value="16:1">
+      <input type="text" id="f-ratio" value="17:0">
     </div>
 
     <div class="section-label" style="margin-top:16px">Trend Sparklines (8-week history, oldest→newest)</div>
     <div class="field-group"><label class="field-label">Events history (comma separated)</label>
       <input type="text" id="spark-events" value="11,9,10,12,8,7,10,17"></div>
     <div class="field-group"><label class="field-label">Hazards history</label>
-      <input type="text" id="spark-hazards" value="10,8,9,11,7,6,9,16"></div>
+      <input type="text" id="spark-hazards" value="10,8,9,11,7,6,9,17"></div>
     <div class="field-group"><label class="field-label">Incidents history</label>
-      <input type="text" id="spark-incidents" value="1,1,0,1,0,0,1,1"></div>
+      <input type="text" id="spark-incidents" value="1,1,0,1,0,0,1,0"></div>
     <div class="field-group"><label class="field-label">Near misses history</label>
       <input type="text" id="spark-near" value="0,0,0,0,0,0,0,0"></div>
     <div class="field-group"><label class="field-label">Best practice history</label>
@@ -431,7 +431,7 @@
     <div class="section-label" style="margin-top:16px">Narrative</div>
     <div class="field-group">
       <label class="field-label">Dashboard subtitle</label>
-      <textarea id="f-dashNote">Eight-week trend on each card. Strong reporting volume, severity remains low.</textarea>
+      <textarea id="f-dashNote">Overall ops view: Events tracker, FT matrix, Skillko, SSV and vehicle data. 17 hazards, zero incidents, 10 resolved, 7 open, 73 active field teams and 76% average Skillko compliance.</textarea>
     </div>
   </div>
 
@@ -440,7 +440,7 @@
     <div class="section-label">Style</div>
     <div class="field-group">
       <select id="f-newsStyle" style="width:100%;background:#0c1614;border:1px solid #B2D23330;color:#fff;padding:8px 10px;font-family:var(--font-mono);font-size:12px;border-radius:3px;outline:none;" onchange="toggleNewsFields()">
-        <option value="award">Award / Recognition</option>
+        <option value="award" selected>Award / Recognition</option>
         <option value="stat">Stat Callout</option>
         <option value="quote">Quote</option>
         <option value="milestone">Milestone</option>
@@ -450,19 +450,19 @@
 
     <div class="section-label" style="margin-top:12px">Shared</div>
     <div class="field-group"><label class="field-label">Eyebrow label</label>
-      <input type="text" id="f-newsEyebrow" value="ROSPA · ORDER OF DISTINCTION"></div>
+      <input type="text" id="f-newsEyebrow" value="OPS DIRECTOR · WEEKLY CONTRACT BRIEF"></div>
     <div class="field-group"><label class="field-label">Top-right badge</label>
-      <input type="text" id="f-newsBadge" value="★ AWARDED"></div>
+      <input type="text" id="f-newsBadge" value="NEWS BRIEF"></div>
     <div class="field-group"><label class="field-label">Body / supporting text</label>
-      <textarea id="f-newsBody">Awarded in recognition of 16 consecutive RoSPA Gold Awards for Health & Safety performance.</textarea></div>
+      <textarea id="f-newsBody">17 contract events landed in the brief: all hazards, zero incidents, zero RIDDOR and zero LTI. The matrix adds the sharper picture: 73 active field teams, 68 Skillko team totals and average compliance at 76%. Skillko range: &lt;85%: 42 teams | 85-94%: 6 teams | 95%+: 20 teams.</textarea></div>
 
     <div id="news-award-fields">
       <div class="section-label" style="margin-top:12px">Award / Recognition</div>
-      <div class="field-group"><label class="field-label">Headline line 1</label><input type="text" id="f-newsLine1" value="Sixteen"></div>
-      <div class="field-group"><label class="field-label">Headline line 2</label><input type="text" id="f-newsLine2" value="consecutive"></div>
-      <div class="field-group"><label class="field-label">Headline line 3 (accent)</label><input type="text" id="f-newsLine3" value="Golds."></div>
-      <div class="field-group"><label class="field-label">Streak count</label><input type="number" id="f-rospStreak" value="16"></div>
-      <div class="field-group"><label class="field-label">Qualifying period</label><input type="text" id="f-rospPeriod" value="01 Jan 2025 → 01 Jan 2026"></div>
+      <div class="field-group"><label class="field-label">Headline line 1</label><input type="text" id="f-newsLine1" value="Hazards"></div>
+      <div class="field-group"><label class="field-label">Headline line 2</label><input type="text" id="f-newsLine2" value="are"></div>
+      <div class="field-group"><label class="field-label">Headline line 3 (accent)</label><input type="text" id="f-newsLine3" value="talking."></div>
+      <div class="field-group"><label class="field-label">Streak count</label><input type="number" id="f-rospStreak" value="17"></div>
+      <div class="field-group"><label class="field-label">Qualifying period</label><input type="text" id="f-rospPeriod" value="3–10 May 2026"></div>
     </div>
 
     <div id="news-stat-fields" style="display:none">
@@ -504,29 +504,29 @@
   <!-- ── RISK / CONCENTRATION ───────────────────── -->
   <div id="tab-risk" class="slide-tab" style="display:none">
     <div class="section-label">Hazard Mix (Donut)</div>
-    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-0-label" value="DDD Trees"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-0" value="52"></div></div>
-    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-1-label" value="Vegetation"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-1" value="43"></div></div>
-    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-2-label" value="Slips, Trips & Falls"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-2" value="41"></div></div>
-    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-3-label" value="Other hazards"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-3" value="165"></div></div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-0-label" value="Property &amp; Infrastructure"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-0" value="8"></div></div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-1-label" value="Ecology &amp; Vegetation"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-1" value="4"></div></div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-2-label" value="Health &amp; Safety"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-2" value="3"></div></div>
+    <div class="field-row"><div class="field-group"><label class="field-label">Label</label><input type="text" id="hm-3-label" value="Other hazards"></div><div class="field-group"><label class="field-label">Count</label><input type="number" id="hm-3" value="2"></div></div>
 
     <div class="section-label" style="margin-top:16px">Top Clients (hazard count)</div>
     <div class="field-group"><label class="field-label">Client 1 name</label><input type="text" id="cl-0-name" value="NGED"></div>
-    <div class="field-group"><label class="field-label">Client 1 count</label><input type="number" id="cl-0-val" value="8"></div>
-    <div class="field-group"><label class="field-label">Client 2 name</label><input type="text" id="cl-1-name" value="SSE Contracting"></div>
-    <div class="field-group"><label class="field-label">Client 2 count</label><input type="number" id="cl-1-val" value="3"></div>
-    <div class="field-group"><label class="field-label">Client 3 name</label><input type="text" id="cl-2-name" value="UK Power Networks"></div>
-    <div class="field-group"><label class="field-label">Client 3 count</label><input type="number" id="cl-2-val" value="1"></div>
-    <div class="field-group"><label class="field-label">Client 4 name</label><input type="text" id="cl-3-name" value="ESB Networks"></div>
-    <div class="field-group"><label class="field-label">Client 4 count</label><input type="number" id="cl-3-val" value="4"></div>
-    <div class="field-group"><label class="field-label">Client 5 name</label><input type="text" id="cl-4-name" value="GC Ireland Utilities"></div>
-    <div class="field-group"><label class="field-label">Client 5 count</label><input type="number" id="cl-4-val" value="1"></div>
-    <div class="field-group"><label class="field-label">Client 6 name</label><input type="text" id="cl-5-name" value="Other Contracts"></div>
+    <div class="field-group"><label class="field-label">Client 1 count</label><input type="number" id="cl-0-val" value="9"></div>
+    <div class="field-group"><label class="field-label">Client 2 name</label><input type="text" id="cl-1-name" value="SSE"></div>
+    <div class="field-group"><label class="field-label">Client 2 count</label><input type="number" id="cl-1-val" value="6"></div>
+    <div class="field-group"><label class="field-label">Client 3 name</label><input type="text" id="cl-2-name" value="UKPN"></div>
+    <div class="field-group"><label class="field-label">Client 3 count</label><input type="number" id="cl-2-val" value="2"></div>
+    <div class="field-group"><label class="field-label">Client 4 name</label><input type="text" id="cl-3-name" value="SWEEPING"></div>
+    <div class="field-group"><label class="field-label">Client 4 count</label><input type="number" id="cl-3-val" value="0"></div>
+    <div class="field-group"><label class="field-label">Client 5 name</label><input type="text" id="cl-4-name" value="HIGHWAYS"></div>
+    <div class="field-group"><label class="field-label">Client 5 count</label><input type="number" id="cl-4-val" value="0"></div>
+    <div class="field-group"><label class="field-label">Client 6 name</label><input type="text" id="cl-5-name" value="ESB"></div>
     <div class="field-group"><label class="field-label">Client 6 count</label><input type="number" id="cl-5-val" value="0"></div>
 
     <div class="section-label" style="margin-top:16px">Narrative</div>
     <div class="field-group">
       <label class="field-label">Risk slide note (below client chart)</label>
-      <textarea id="f-riskNote">Volume tracks contract size. Tree, surface and perimeter hazards are being observed regularly by GC teams.</textarea>
+      <textarea id="f-riskNote">NGED leads the event table with 9 hazards, followed by SSE with 6 and UKPN with 2. Matrix pressure sits in competence: &lt;85%: 42 teams | 85-94%: 6 teams | 95%+: 20 teams. Bottom five: MJP Tree Services Ltd (4%); Garden Village Development Supplies Ltd (23%); Keighley Tree Services (32%); George Harris Tree Services (36%); GB Construction (Herts) Ltd (42%).</textarea>
     </div>
   </div>
 
@@ -559,7 +559,7 @@
     <div class="section-label" style="margin-top:16px">Top Hazard Signal</div>
     <div class="field-group">
       <label class="field-label">Context note (blank to auto-generate from hazard mix)</label>
-      <textarea id="f-hazardContext" placeholder="Leave blank to auto-generate">Contract focus: NGED carries the highest event load (8 hazards) followed by SSE Contracting (3). UK Power Networks and ESB have lower volume but should be benchmarked weekly on hazard quality, closure pace and briefing output. Coventry/Warwick and Yeovil remain the key hotspots for targeted follow-up.</textarea>
+      <textarea id="f-hazardContext" placeholder="Leave blank to auto-generate">Clean harm week: 17 hazards and no incidents. Customer Asset Damage is the lead signal (6), with hotspot activity in Coventry / Warwick, Yeovil, Lincs South. Keep contract competition focused on hazard quality, closure pace and whether zero-reporting divisions have genuine low exposure or under-reporting.</textarea>
     </div>
   </div>
 
@@ -571,7 +571,7 @@
     </p>
 
     <div class="section-label" style="margin-top:4px">Accreditations</div>
-    <div class="field-group"><label class="field-label">Total memberships held</label><input type="number" id="sp-mem-total" value="94"></div>
+    <div class="field-group"><label class="field-label">Total memberships held</label><input type="number" id="sp-mem-total" value="73"></div>
     <div style="margin-bottom:8px">
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
         <span class="field-label" style="margin:0">Name</span>
@@ -580,54 +580,54 @@
         <span class="field-label" style="margin:0">Status</span>
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
-        <input type="text" id="sp-cert-0-name" value="CLOCS Champion Membership">
-        <input type="text" id="sp-cert-0-expiry" value="01/04/26">
-        <input type="number" id="sp-cert-0-days" value="-30">
-        <input type="text" id="sp-cert-0-status" value="Expired">
+        <input type="text" id="sp-cert-0-name" value="MJP Tree Services Ltd">
+        <input type="text" id="sp-cert-0-expiry" value="4%">
+        <input type="number" id="sp-cert-0-days" value="4">
+        <input type="text" id="sp-cert-0-status" value="Low">
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
-        <input type="text" id="sp-cert-1-name" value="RISQS Audit — SAS">
-        <input type="text" id="sp-cert-1-expiry" value="05/06/26">
-        <input type="number" id="sp-cert-1-days" value="35">
-        <input type="text" id="sp-cert-1-status" value="Current">
+        <input type="text" id="sp-cert-1-name" value="Garden Village Development Supplies Ltd">
+        <input type="text" id="sp-cert-1-expiry" value="23%">
+        <input type="number" id="sp-cert-1-days" value="23">
+        <input type="text" id="sp-cert-1-status" value="Low">
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
-        <input type="text" id="sp-cert-2-name" value="NIC EIC EV Certification">
-        <input type="text" id="sp-cert-2-expiry" value="06/01/25">
-        <input type="number" id="sp-cert-2-days" value="0">
-        <input type="text" id="sp-cert-2-status" value="Pending">
+        <input type="text" id="sp-cert-2-name" value="Keighley Tree Services">
+        <input type="text" id="sp-cert-2-expiry" value="32%">
+        <input type="number" id="sp-cert-2-days" value="32">
+        <input type="text" id="sp-cert-2-status" value="Low">
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px">
-        <input type="text" id="sp-cert-3-name" value="Constructionline Platinum">
-        <input type="text" id="sp-cert-3-expiry" value="08/08/26">
-        <input type="number" id="sp-cert-3-days" value="99">
-        <input type="text" id="sp-cert-3-status" value="Current">
+        <input type="text" id="sp-cert-3-name" value="George Harris Tree Services">
+        <input type="text" id="sp-cert-3-expiry" value="36%">
+        <input type="number" id="sp-cert-3-days" value="36">
+        <input type="text" id="sp-cert-3-status" value="Low">
       </div>
     </div>
 
     <div class="section-label" style="margin-top:8px">Actions</div>
     <div class="field-row-3">
-      <div class="field-group"><label class="field-label">Open</label><input type="number" id="sp-act-total" value="379"></div>
-      <div class="field-group"><label class="field-label">Overdue</label><input type="number" id="sp-act-overdue" value="18"></div>
-      <div class="field-group"><label class="field-label">Closed ↑wk</label><input type="number" id="sp-act-closed" value="13"></div>
+      <div class="field-group"><label class="field-label">Open</label><input type="number" id="sp-act-total" value="73"></div>
+      <div class="field-group"><label class="field-label">Overdue</label><input type="number" id="sp-act-overdue" value="42"></div>
+      <div class="field-group"><label class="field-label">Closed ↑wk</label><input type="number" id="sp-act-closed" value="20"></div>
     </div>
 
     <div class="section-label" style="margin-top:8px">Nonconformities</div>
     <div class="field-row-3">
-      <div class="field-group"><label class="field-label">Open NCRs</label><input type="number" id="sp-ncr-open" value="12"></div>
+      <div class="field-group"><label class="field-label">Open NCRs</label><input type="number" id="sp-ncr-open" value="7"></div>
       <div class="field-group"><label class="field-label">Overdue close</label><input type="number" id="sp-ncr-overdue" value="2"></div>
-      <div class="field-group"><label class="field-label">Raised ↑wk</label><input type="number" id="sp-ncr-raised" value="3"></div>
+      <div class="field-group"><label class="field-label">Raised ↑wk</label><input type="number" id="sp-ncr-raised" value="17"></div>
     </div>
 
     <div class="section-label" style="margin-top:8px">Audits</div>
     <div class="field-row">
       <div class="field-group"><label class="field-label">Completed / Scheduled</label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          <input type="number" id="sp-aud-complete" value="3">
-          <input type="number" id="sp-aud-sched" value="4">
+          <input type="number" id="sp-aud-complete" value="2">
+          <input type="number" id="sp-aud-sched" value="2">
         </div>
       </div>
-      <div class="field-group"><label class="field-label">Overdue actions</label><input type="number" id="sp-aud-overdue" value="6"></div>
+      <div class="field-group"><label class="field-label">Overdue actions</label><input type="number" id="sp-aud-overdue" value="2"></div>
     </div>
 
     <div class="section-label" style="margin-top:12px">IMS Update Cards (manual)</div>
@@ -693,18 +693,7 @@
     { title: "Update permit procedures", body: "Re-issue IMS docs to reflect new permit processes." },
   ];
 
-  const DEFAULT_INCIDENTS = [
-    {
-      severity: "Low severity · Minor impact",
-      type: "Slip / Trip / Fall",
-      bu: "Maintenance",
-      summary: "An operative reversing a rotavator close to a fenceline caught his hand on the fence and suffered a minor soft tissue injury.",
-      learning: "Reinforcing situational awareness near perimeter features during reverse manoeuvres.",
-      riddor: false,
-      lti: false,
-      status: "Under investigation",
-    },
-  ];
+  const DEFAULT_INCIDENTS = [];
 
   const SEVERITY_ORDER = [
     "High severity · Major impact",
@@ -1021,12 +1010,11 @@
 
     // IMS: read from DOM (populated by buildEditFields), fall back to window store, then hardcoded defaults
     const IMS_DEFAULTS = [
-      { tag: "Audit", title: "Constructionline — Building Safety Act", body: "Submission with Constructionline for AI to review documentation & evidence. All other areas approved and verified." },
-      { tag: "Internal", title: "Temporary Works gap analysis", body: "Internal audit gap analysis completed and report distributed." },
-      { tag: "Tooling", title: "IMS Phone App", body: "Continued development; running noticeably faster. Quality team now using the new app to complete Q checks." },
-      { tag: "Permits", title: "Permit procedure updates", body: "Permit findings actively being closed. Next: re-issue IMS documentation to reflect updated permit processes." },
-      { tag: "Templates", title: "SafetyCulture updates", body: "New concrete inspection checklists added to the site report template. Rope access supervisor checklist added to induction & competency checks." },
-      { tag: "Mapping", title: "Procurement process mapping", body: "Cosmin & Phill attending in-person workshops in Billericay the week after next." },
+      { tag: "Events", title: "Hazard reporting is the dominant signal", body: "17 hazards and zero incidents across NGED/SSE/UKPN/Sweeping/Highways/ESB. Most records are Opportunity impact with Minor potential." },
+      { tag: "Matrix", title: "Field-team readiness is the watch item", body: "73 active field teams. Skillko average is 76%. Range count: <85%: 42 teams | 85-94%: 6 teams | 95%+: 20 teams." },
+      { tag: "Skillko", title: "Bottom five need first contact", body: "MJP Tree Services Ltd (4%); Garden Village Development Supplies Ltd (23%); Keighley Tree Services (32%); George Harris Tree Services (36%); GB Construction (Herts) Ltd (42%)" },
+      { tag: "SSV", title: "SSE site visits compliant", body: "2 SSV records loaded: one High Standards and one Compliant, with no non-compliance questions recorded." },
+      { tag: "Vehicles", title: "Vehicle checks show strong completion", body: "93 in-week vehicle checks in target divisions; 2 failed response records need owner close-out." }
     ];
     const _imsStore = window._imsData || IMS_DEFAULTS;
     const ims = _imsStore.map((def, i) => ({
@@ -1036,9 +1024,9 @@
     })).filter(c => c.title);
 
     const PRI_DEFAULTS = [
-      { title: "HSQE KPI Dashboard", body: "Implement suggested improvements." },
-      { title: "RAMS Creator in IMS App", body: "Build out the in-app RAMS workflow." },
-      { title: "Update permit procedures", body: "Re-issue IMS docs to reflect new permit processes." },
+      { title: "Close the open hazard tail", body: "7 event records remain open. Push closure ownership through NGED/SSE/UKPN before the next weekly snapshot." },
+      { title: "Attack Skillko red teams", body: "<85%: 42 teams | 85-94%: 6 teams | 95%+: 20 teams. Bottom five: MJP Tree Services Ltd (4%); Garden Village Development Supplies Ltd (23%); Keighley Tree Services (32%); George Harris Tree Services (36%); GB Construction (Herts) Ltd (42%)." },
+      { title: "Vehicle inspection follow-up", body: "93 vehicle checks were logged in the snapshot week with 2 failed response records. Review failures and evidence of close-out." }
     ];
     const _priStore = window._priorityData || PRI_DEFAULTS;
     const priorities = _priStore.map((def, i) => ({
@@ -1047,7 +1035,7 @@
       body: document.getElementById('pri-'+i+'-body')?.value || def.body,
     })).filter(p => p.title);
 
-    const buNames = ["Maintenance","Infrastructure & Utilities","LDE","GC Ireland","Central Functions","Land & Water Solutions"];
+    const buNames = ["NGED","SSE","UKPN","SWEEPING","HIGHWAYS","ESB"];
     const buDefRed   = [0,1,0,1,0,0];
     const buDefAmber = [0,16,0,0,0,0];
     const businessUnits = buNames.map((name, i) => ({
@@ -1075,11 +1063,11 @@
     const clients = [0,1,2,3,4,5].map(i => ({
       name: document.getElementById('cl-'+i+'-name')?.value || ['Morrisons','Severn Trent','National Grid','Network Rail','Tesco','Moto'][i],
       value: parseInt(document.getElementById('cl-'+i+'-val')?.value) || [30,28,18,14,11,9][i]
-    })).filter(c => c.value > 0);
+    })).filter(c => c.name);
 
     // Collect incidents from dynamic cards
     const incidentCount = (window._incidentData || []).length;
-    const _defaultInc = [{ severity: 'Low severity · Minor impact', type: 'Slip / Trip / Fall', bu: 'Maintenance', summary: 'An operative reversing a rotavator close to a fenceline caught his hand on the fence and suffered a minor soft tissue injury.', learning: 'Reinforcing situational awareness near perimeter features during reverse manoeuvres.', status: 'Under investigation', riddor: false, lti: false }];
+    const _defaultInc = [];
     const harmEvents = (window._incidentData || _defaultInc).map((_, i) => ({
       severity: g(`inc-${i}-severity`) || 'Low severity · Minor impact',
       type: g(`inc-${i}-type`) || '',
@@ -1754,7 +1742,7 @@
     const hazardMix = d.hazardMix;
     const clients = d.clients;
     const total = hazardMix.reduce((a, h) => a + h.value, 0);
-    const max = Math.max(...clients.map(c => c.value));
+    const max = Math.max(1, ...clients.map(c => c.value));
     let cum = 0;
     const segs = hazardMix.map((h, i) => {
       const start = cum; cum += h.value; const end = cum;
@@ -2117,8 +2105,9 @@
 
   function CertChip({ daysLeft, status }) {
     let bg, label;
-    if (status === "Expired" || daysLeft < 0) { bg = "#C0392B"; label = "EXPIRED"; }
-    else if (status === "Pending")            { bg = PAL.orange; label = "PENDING"; }
+    if (status === "Expired" || daysLeft < 0) { bg = "#C0392B"; label = "<85%"; }
+    else if (status === "Low")                { bg = PAL.orange; label = "<85%"; }
+    else if (status === "Pending")            { bg = PAL.orange; label = "WATCH"; }
     else if (daysLeft <= 30)                  { bg = PAL.orange; label: `${daysLeft}D`; label = `${daysLeft}D`; }
     else if (daysLeft <= 90)                  { bg = "#c8a000"; label = `${daysLeft}D`; }
     else                                      { bg = PAL.mid;   label = "CURRENT"; }
@@ -2144,14 +2133,14 @@
     // Left column: live data cards from SharePoint
     const liveCards = [
       {
-        source: "Certificates · Action List",
-        label: "ACCREDITATIONS",
+        source: "FT Matrix · Skillko",
+        label: "FIELD TEAMS",
         accent: sp.certExpiring.some(c => c.daysLeft < 0 || c.status === "Pending") ? PAL.orange : PAL.mid,
         content: (
           <div>
             <div className="t-display" style={{ fontSize: 52, color: PAL.dark, lineHeight: 1 }}>
               {sp.memberships.total}
-              <span className="t-body" style={{ fontSize: 18, opacity: 0.55, marginLeft: 10 }}>total held</span>
+              <span className="t-body" style={{ fontSize: 18, opacity: 0.55, marginLeft: 10 }}>active teams</span>
             </div>
             <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
               {sp.certExpiring.map((c, i) => (
@@ -2165,16 +2154,16 @@
         ),
       },
       {
-        source: "Action List",
-        label: "ACTIONS",
+        source: "Events Tracker",
+        label: "MATRIX SIGNAL",
         accent: sp.actions.overdue > 10 ? PAL.orange : PAL.mid,
         content: (
           <div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 14 }}>
               {[
-                ["OPEN",    sp.actions.total,          PAL.dark],
-                ["OVERDUE", sp.actions.overdue,        sp.actions.overdue > 10 ? PAL.orange : PAL.dark],
-                ["CLOSED ↑WK", sp.actions.closedThisWeek, PAL.mid],
+                ["ACTIVE",   sp.actions.total,          PAL.dark],
+                ["SKILLKO <85%", sp.actions.overdue, sp.actions.overdue > 0 ? PAL.orange : PAL.dark],
+                ["SKILLKO 95%+", sp.actions.closedThisWeek, PAL.mid],
               ].map(([lbl, val, col]) => (
                 <div key={lbl} style={{ background: PAL.warmGrey, padding: "10px 12px" }}>
                   <div className="t-mono" style={{ fontSize: 10, letterSpacing: "0.16em", color: PAL.dark, opacity: 0.6 }}>{lbl}</div>
@@ -2183,23 +2172,23 @@
               ))}
             </div>
             <p className="t-body" style={{ fontSize: 14, color: PAL.dark, opacity: 0.7, lineHeight: 1.4 }}>
-              {sp.actions.overdue} overdue actions require owner escalation. {sp.actions.closedThisWeek} closed in the last 7 days.
+              {sp.actions.overdue} team totals are below 85% Skillko compliance. {sp.actions.closedThisWeek} teams are at 95%+.
             </p>
           </div>
         ),
       },
       {
-        source: "Nonconformity List · Audit List",
-        label: "AUDIT & NCRs",
+        source: "SSV · Vehicle Inspection",
+        label: "ASSURANCE CHECKS",
         accent: sp.nonconformities.overdueClose > 0 ? PAL.orange : PAL.mid,
         content: (
           <div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
               {[
-                ["OPEN NCRs",       sp.nonconformities.open,           PAL.dark],
-                ["OVERDUE CLOSE",   sp.nonconformities.overdueClose,   sp.nonconformities.overdueClose > 0 ? PAL.orange : PAL.dark],
-                ["AUDITS THIS MTH", sp.audits.completedThisMonth + "/" + sp.audits.scheduledThisMonth, PAL.dark],
-                ["AUDIT ACTIONS OD",sp.audits.overdueActions,          sp.audits.overdueActions > 0 ? PAL.orange : PAL.dark],
+                ["OPEN HAZARDS",     sp.nonconformities.open,           PAL.dark],
+                ["VEHICLE FAILS",   sp.nonconformities.overdueClose,   sp.nonconformities.overdueClose > 0 ? PAL.orange : PAL.dark],
+                ["SSV COMPLETE", sp.audits.completedThisMonth + "/" + sp.audits.scheduledThisMonth, PAL.dark],
+                ["VEHICLE ACTIONS",sp.audits.overdueActions,          sp.audits.overdueActions > 0 ? PAL.orange : PAL.dark],
               ].map(([lbl, val, col]) => (
                 <div key={lbl} style={{ background: PAL.warmGrey, padding: "10px 12px" }}>
                   <div className="t-mono" style={{ fontSize: 10, letterSpacing: "0.16em", color: PAL.dark, opacity: 0.6 }}>{lbl}</div>
@@ -2208,7 +2197,7 @@
               ))}
             </div>
             <p className="t-body" style={{ fontSize: 14, color: PAL.dark, opacity: 0.7, lineHeight: 1.4 }}>
-              {sp.nonconformities.raisedThisWeek} new NCRs raised this week. {sp.audits.completedThisMonth} of {sp.audits.scheduledThisMonth} scheduled audits completed this month.
+              {sp.nonconformities.raisedThisWeek} event records loaded this week. {sp.audits.completedThisMonth} of {sp.audits.scheduledThisMonth} SSVs complete; vehicle fails need close-out evidence.
             </p>
           </div>
         ),

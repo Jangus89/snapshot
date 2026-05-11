@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HSQE Ops Snapshot · Business Unit Performance</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root {
+    --dark:#071b14; --ink:#11241b; --lime:#B2D235; --mid:#6BA43A; --orange:#F28C28;
+    --paper:#F4F1EA; --grey:#DFDDD3; --white:#fff;
+    --display: Georgia, 'Times New Roman', serif; --body: Inter, Arial, sans-serif; --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#101510; color:var(--ink); font-family:var(--body); }
+  .deck { width:100%; }
+  .slide { width:100vw; min-height:56.25vw; max-height:100vh; aspect-ratio:16/9; position:relative; overflow:hidden; margin:0 auto 18px; background:var(--paper); }
+  .dark { background:var(--dark); color:var(--white); }
+  .grey { background:var(--grey); }
+  .display { font-family:var(--display); font-weight:700; letter-spacing:0; }
+  .mono { font-family:var(--mono); text-transform:uppercase; letter-spacing:.16em; }
+  .header { position:absolute; top:64px; left:80px; right:80px; display:flex; justify-content:space-between; align-items:center; padding-bottom:22px; border-bottom:1px solid rgba(7,27,20,.22); }
+  .dark .header { border-bottom-color:rgba(178,210,53,.32); }
+  .label { font-size:18px; color:inherit; opacity:.7; }
+  .right { font-size:16px; color:var(--mid); }
+  .big { font-size:132px; line-height:.92; margin:0; }
+  .cover-title { font-size:230px; line-height:.86; margin:0; }
+  .subtitle { font-size:28px; line-height:1.35; max-width:1180px; opacity:.8; }
+  .grid6 { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; }
+  .card { background:var(--dark); color:white; padding:26px; border-top:4px solid var(--lime); }
+  .card.light { background:white; color:var(--ink); border-top-color:var(--mid); }
+  .metric { font-family:var(--display); font-size:54px; line-height:.95; }
+  .small { font-size:14px; opacity:.68; line-height:1.35; }
+  .table-row { display:grid; grid-template-columns:48px 1fr 120px 130px 130px 90px; gap:16px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(7,27,20,.16); }
+  .dark .table-row { border-bottom-color:rgba(178,210,53,.2); }
+  .rank { color:var(--mid); font-size:20px; }
+  .bar { height:10px; background:rgba(7,27,20,.14); overflow:hidden; }
+  .bar span { display:block; height:100%; background:var(--lime); }
+  .pill { display:inline-block; padding:5px 10px; background:var(--dark); color:var(--lime); font-family:var(--mono); font-size:11px; letter-spacing:.12em; }
+  .dark .pill { background:var(--lime); color:var(--dark); }
+  .note { position:absolute; bottom:46px; left:80px; right:80px; border-top:1px solid currentColor; padding-top:16px; opacity:.7; }
+  [contenteditable] { outline:2px dashed transparent; }
+  [contenteditable]:focus { outline-color:var(--orange); background:rgba(255,255,255,.14); }
+  .edit-hint { position:fixed; right:18px; bottom:18px; z-index:20; background:var(--dark); color:var(--lime); border:1px solid rgba(178,210,53,.45); padding:10px 14px; font:11px var(--mono); letter-spacing:.12em; text-transform:uppercase; opacity:.74; }
+  @media print { .edit-hint { display:none; } body { background:white; } .slide { margin:0; page-break-after:always; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const DATA = {"period": "3-10 May 2026", "divisions": [{"division": "NGED", "ssv": 0, "ssv_findings": 0, "amber": 9, "red": 0, "skillko_pct": 0.7626470588235295, "vehicle_checks": 22, "vehicle_fails": 1, "checklist_minutes": 44.0}, {"division": "SSE", "ssv": 2, "ssv_findings": 0, "amber": 6, "red": 0, "skillko_pct": 0.7626470588235295, "vehicle_checks": 13, "vehicle_fails": 0, "checklist_minutes": 50.0}, {"division": "UKPN", "ssv": 0, "ssv_findings": 0, "amber": 2, "red": 0, "skillko_pct": 0.7626470588235295, "vehicle_checks": 58, "vehicle_fails": 1, "checklist_minutes": 12.0}, {"division": "SWEEPING", "ssv": 0, "ssv_findings": 0, "amber": 0, "red": 0, "skillko_pct": 0.7626470588235295, "vehicle_checks": 0, "vehicle_fails": 0, "checklist_minutes": 0}, {"division": "HIGHWAYS", "ssv": 0, "ssv_findings": 0, "amber": 0, "red": 0, "skillko_pct": 0.7626470588235295, "vehicle_checks": 0, "vehicle_fails": 0, "checklist_minutes": 0}, {"division": "ESB", "ssv": 0, "ssv_findings": 0, "amber": 0, "red": 0, "skillko_pct": 0.7626470588235295, "vehicle_checks": 0, "vehicle_fails": 0, "checklist_minutes": 0}], "events_total": 17, "hazards": 17, "incidents": 0, "open_events": 7, "resolved_events": 10, "skillko_avg": 0.7626470588235295, "skillko_bands": {"95%+": 20, "85-94%": 6, "<85%": 42}, "skillko_team_count": 68, "vehicle_week": 93, "vehicle_fails": 2, "ssv_total": 2, "ssv_findings": 0, "total_minutes": 106.0, "top_teams": [{"name": "High Branch", "compliance": 1.0, "required": 55, "achieved": 55, "gap": 0, "activity": 0}, {"name": "JPAS Contracting Ltd", "compliance": 1.0, "required": 55, "achieved": 55, "gap": 0, "activity": 0}, {"name": "Greenland Services Ltd", "compliance": 1.0, "required": 53, "achieved": 53, "gap": 0, "activity": 0}, {"name": "J&G Tree Contractors Ltd", "compliance": 1.0, "required": 38, "achieved": 38, "gap": 0, "activity": 0}, {"name": "Ropes and Slopes Limited", "compliance": 1.0, "required": 38, "achieved": 38, "gap": 0, "activity": 1}], "bottom_teams": [{"name": "MJP Tree Services Ltd", "compliance": 0.04, "required": 53, "achieved": 2, "gap": 51, "activity": 0}, {"name": "Garden Village Development Supplies Ltd", "compliance": 0.23, "required": 72, "achieved": 16, "gap": 56, "activity": 0}, {"name": "Keighley Tree Services", "compliance": 0.32, "required": 72, "achieved": 23, "gap": 49, "activity": 0}, {"name": "George Harris Tree Services", "compliance": 0.36, "required": 87, "achieved": 31, "gap": 56, "activity": 0}, {"name": "GB Construction (Herts) Ltd", "compliance": 0.42, "required": 70, "achieved": 29, "gap": 41, "activity": 0}], "top_staff": [{"name": "Bailey Mihill", "team": "Tree Tops Arborist", "compliance": 1.0, "required": 17, "achieved": 17, "gap": 0, "activity": 0}, {"name": "Bradley York", "team": "Greenland Services Ltd", "compliance": 1.0, "required": 17, "achieved": 17, "gap": 0, "activity": 0}, {"name": "Brecon Lee", "team": "RFP Tree and Landscape Services Ltd", "compliance": 1.0, "required": 17, "achieved": 17, "gap": 0, "activity": 0}, {"name": "Callum Gulliver", "team": "RFP Tree and Landscape Services Ltd", "compliance": 1.0, "required": 17, "achieved": 17, "gap": 0, "activity": 0}, {"name": "Christopher 'Billy' Rhodes", "team": "RFP Tree and Landscape Services Ltd", "compliance": 1.0, "required": 17, "achieved": 17, "gap": 0, "activity": 0}], "bottom_staff": [{"name": "Gethin Harris", "team": "George Harris Tree Services", "compliance": 0.0, "required": 17, "achieved": 0, "gap": 17, "activity": 0}, {"name": "James Parkin", "team": "MJP Tree Services Ltd", "compliance": 0.0, "required": 17, "achieved": 0, "gap": 17, "activity": 0}, {"name": "Jozef Porubsky", "team": "GB Construction (Herts) Ltd", "compliance": 0.0, "required": 17, "achieved": 0, "gap": 17, "activity": 0}, {"name": "Mark Leighton", "team": "Heartwood Tree Surgeons Ltd", "compliance": 0.0, "required": 17, "achieved": 0, "gap": 17, "activity": 0}, {"name": "Neil Harris", "team": "Garden Village Development Supplies Ltd", "compliance": 0.0, "required": 17, "achieved": 0, "gap": 17, "activity": 0}], "priorities": ["Close the open hazard tail: 7 records remain open in the event tracker.", "Attack Skillko red teams: 42 team totals sit below 85%.", "Vehicle inspection follow-up: 2 failed response records need close-out evidence."]};
+const P = { dark:'#071b14', lime:'#B2D235', mid:'#6BA43A', orange:'#F28C28', paper:'#F4F1EA', grey:'#DFDDD3' };
+const pct = v => Math.round(v * 100) + '%';
+function Header({n,label,right,dark=false}) {
+  return <div className="header"><div className="mono label" style={{color:dark?P.lime:P.dark}}>{String(n).padStart(2,'0')} / {label}</div><div className="mono right">{right}</div></div>
+}
+function DivisionCard({d}) {
+  const quality = d.amber + d.red === 0 && d.vehicle_checks === 0 && d.ssv === 0 ? 'NO SAMPLE' : d.red > 0 || d.vehicle_fails > 0 ? 'WATCH' : d.amber > 0 ? 'ACTIVE' : 'QUIET';
+  return <div className="card light">
+    <div className="mono" style={{fontSize:16,color:P.mid}}>{d.division}</div>
+    <div style={{marginTop:22,display:'grid',gap:11}}>
+      {[['SSV',d.ssv],['FINDINGS',d.ssv_findings],['AMBER',d.amber],['RED',d.red],['SKILLKO',pct(d.skillko_pct)],['VEHICLE',d.vehicle_checks],['MINS',d.checklist_minutes]].map(([k,v]) =>
+        <div key={k} style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',gap:8}}>
+          <span className="mono small">{k}</span><span className="display" style={{fontSize:28,color:k==='RED'&&v>0?P.orange:P.dark}}>{v}</span>
+        </div>
+      )}
+    </div>
+    <div className="pill" style={{marginTop:20}}>{quality}</div>
+  </div>
+}
+function Ranking({rows,type='team'}) {
+  return <div>
+    {rows.map((r,i)=><div className="table-row" key={r.name}>
+      <div className="display rank">{String(i+1).padStart(2,'0')}</div>
+      <div><div className="display" style={{fontSize:25,lineHeight:1.05}}>{r.name}</div>{type==='staff'&&<div className="small">{r.team}</div>}</div>
+      <div className="display" style={{fontSize:34,color:r.compliance<.85?P.orange:P.mid}}>{pct(r.compliance)}</div>
+      <div><div className="mono small">Achieved</div><b>{r.achieved}/{r.required}</b></div>
+      <div><div className="mono small">Gap</div><b>{r.gap}</b></div>
+      <div><div className="mono small">Sample</div><b>{r.activity}</b></div>
+    </div>)}
+  </div>
+}
+function App() {
+  return <main className="deck">
+    <section className="slide dark">
+      <div style={{position:'absolute',top:64,left:80,right:80,display:'flex',justifyContent:'space-between',alignItems:'center',borderBottom:'1px solid rgba(178,210,53,.32)',paddingBottom:22}}>
+        <div className="mono" style={{fontSize:16,color:P.lime}}>HSQE / OPS DIRECTOR WEEKLY BRIEF</div>
+        <div className="mono" style={{fontSize:16,color:P.lime}}>{DATA.period}</div>
+      </div>
+      <div style={{position:'absolute',top:185,left:80,right:80}}>
+        <h1 className="display cover-title">Contract<br/>Snapshot<span style={{color:P.lime}}>.</span></h1>
+        <p className="subtitle" style={{color:P.lime,marginTop:28}}>NGED, SSE, UKPN, Sweeping, Highways and ESB. A fresh build from the tracker exports and FT matrix: performance, assurance, competence and closure in one brief. Click any text to edit.</p>
+      </div>
+      <div className="grid6" style={{position:'absolute',left:80,right:80,bottom:70}}>
+        {DATA.divisions.map(d=><div key={d.division} style={{borderTop:'1px solid rgba(178,210,53,.35)',paddingTop:14}}><div className="mono" style={{color:P.lime,fontSize:13}}>{d.division}</div><div className="display" style={{fontSize:48}}>{d.amber}<span style={{opacity:.35}}> / {d.red}</span></div><div className="small">amber / red</div></div>)}
+      </div>
+    </section>
+
+    <section className="slide grey">
+      <Header n="2" label="Business Unit Performance" right="CONTRACT COMPETITION" />
+      <div style={{position:'absolute',top:150,left:80,right:80}}>
+        <h2 className="display big">Who is visible. Who is quiet.</h2>
+        <p className="subtitle">NGED leads hazard visibility, SSE carries the SSV sample, UKPN dominates vehicle-check volume. Zero rows for ESB, Sweeping and Highways should be treated as a reporting/exposure question, not an automatic clean week.</p>
+      </div>
+      <div className="grid6" style={{position:'absolute',left:80,right:80,bottom:90}}>{DATA.divisions.map(d=><DivisionCard key={d.division} d={d} />)}</div>
+    </section>
+
+    <section className="slide">
+      <Header n="3" label="Overall Figures" right="SIX-COLUMN DIVISION VIEW" />
+      <div style={{position:'absolute',top:145,left:80,right:80}}>
+        <h2 className="display" style={{fontSize:78,margin:0}}>Sampled assurance by division.</h2>
+        <div className="grid6" style={{marginTop:32}}>{DATA.divisions.map(d=><DivisionCard key={d.division} d={d} />)}</div>
+      </div>
+      <div className="note mono">Total sampled checklist time: {DATA.total_minutes} minutes · Events: {DATA.events_total} · SSVs: {DATA.ssv_total} · Vehicle checks: {DATA.vehicle_week}</div>
+    </section>
+
+    <section className="slide grey">
+      <Header n="4" label="Top Performers" right="TEAMS + STAFF" />
+      <div style={{position:'absolute',top:145,left:80,right:80,display:'grid',gridTemplateColumns:'1fr 1fr',gap:54}}>
+        <div><h2 className="display" style={{fontSize:58,margin:'0 0 22px'}}>Top 5 teams.</h2><Ranking rows={DATA.top_teams} /></div>
+        <div><h2 className="display" style={{fontSize:58,margin:'0 0 22px'}}>Top 5 staff.</h2><Ranking rows={DATA.top_staff} type="staff" /></div>
+      </div>
+    </section>
+
+    <section className="slide">
+      <Header n="5" label="Bottom Performers" right="FIRST CONTACT LIST" />
+      <div style={{position:'absolute',top:145,left:80,right:80,display:'grid',gridTemplateColumns:'1fr 1fr',gap:54}}>
+        <div><h2 className="display" style={{fontSize:58,margin:'0 0 22px'}}>Bottom 5 teams.</h2><Ranking rows={DATA.bottom_teams} /></div>
+        <div><h2 className="display" style={{fontSize:58,margin:'0 0 22px'}}>Bottom 5 staff.</h2><Ranking rows={DATA.bottom_staff} type="staff" /></div>
+      </div>
+    </section>
+
+    <section className="slide grey">
+      <Header n="6" label="Editable News Brief" right="ROSPA-STYLE LIST SLIDE" />
+      <div style={{position:'absolute',top:150,left:80,width:'58%'}}>
+        <div className="mono" style={{fontSize:18,color:P.mid}} contentEditable suppressContentEditableWarning>OPS DIRECTOR · NEXT MOVES</div>
+        <h2 className="display" style={{fontSize:142,lineHeight:.9,margin:'18px 0 0'}} contentEditable suppressContentEditableWarning>Three things<br/><span style={{color:P.mid}}>to move.</span></h2>
+        <p className="subtitle" contentEditable suppressContentEditableWarning>Editable slide: click into the headline or list text and type over it before presenting.</p>
+      </div>
+      <div style={{position:'absolute',top:180,right:80,width:'34%',background:P.dark,color:'white',padding:44,bottom:90}}>
+        <div className="mono" style={{fontSize:13,color:P.lime}}>THE LIST</div>
+        <div style={{marginTop:28,display:'grid',gap:24}}>
+          {DATA.priorities.map((p,i)=><div key={p} style={{borderTop:'1px solid rgba(178,210,53,.35)',paddingTop:18}}>
+            <div className="display" style={{fontSize:36,color:P.lime}}>0{i+1}</div>
+            <div style={{fontSize:22,lineHeight:1.35,marginTop:6}} contentEditable suppressContentEditableWarning>{p}</div>
+          </div>)}
+        </div>
+      </div>
+    </section>
+    <div className="edit-hint">Inline editable · autosaves in browser</div>
+  </main>
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+setTimeout(() => {
+  const selectors = [
+    '.slide h1', '.slide h2', '.slide p', '.slide .mono', '.slide .small',
+    '.slide .display', '.slide b', '.slide .pill', '.slide .metric'
+  ].join(',');
+  const nodes = Array.from(document.querySelectorAll(selectors))
+    .filter(el => !el.closest('.edit-hint') && !el.querySelector('.bar'));
+  nodes.forEach((el, i) => {
+    const key = 'ops-snapshot-edit-' + i;
+    el.setAttribute('contenteditable', 'true');
+    el.setAttribute('spellcheck', 'true');
+    if (localStorage.getItem(key) !== null) el.innerHTML = localStorage.getItem(key);
+    el.addEventListener('input', () => localStorage.setItem(key, el.innerHTML));
+  });
+}, 250);
+</script>
+</body>
+</html>
